@@ -1,0 +1,104 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <title>Hello, world!</title>
+    <script type="text/javascript">
+        const report = [[json]]
+    </script>
+</head>
+<body ng-app="report">
+<!-- NAV -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="margin-bottom: 2em">
+    <a class="navbar-brand" href="#">gemini4j-cucumber</a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse collapse" style="">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">All scenarios</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Failed scenarios</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container" id="accordion" ng-controller="scenarios">
+    <div class="card" ng-repeat="scenario in scenarios" ng-class="{'alert-success': scenario.result === 'OK', 'alert-danger': scenario.result === 'FAIL'}">
+        <div class="card-header" id="heading{{ $index }}">
+            <h5 class="mb-0">
+                <strong><a data-toggle="collapse" data-target="#scenario{{ $index }}" aria-expanded="true"
+                           aria-controls="scenario{{ $index }}" style="font-family: monospace; cursor: pointer">
+                    {{ scenario.text }}
+                </a></strong>
+            </h5>
+        </div>
+
+        <div id="scenario{{ $index }}" class="collapse hide" aria-labelledby="scenario{{ $index }}" data-parent="#accordion">
+            <div class="card-body">
+
+                <div class="container" id="accordion_step_{{ $index }}">
+                    <div class="card" ng-repeat="step in scenario.steps" ng-class="{'alert-success': step.result === 'identical', 'alert-danger': step.result !== 'identical'}">
+                        <div class="card-header" id="heading_{{ $parent.$index }}_{{ $index }}">
+                            <div class="container" style="padding: 0px">
+                                <div style="float: right; margin-left: 10px" ng-if="step.result === 'different'">
+                                    <img src="{{ step.referenceImage }}" style="height: 50px"/>
+                                </div>
+                                <div style="float: right; margin-left: 10px" ng-if="step.result === 'different'">
+                                    <img src="{{ step.diffImage }}" style="height: 50px"/>
+                                </div>
+                                <div style="float: right; margin-left: 10px">
+                                    <img src="{{ step.takenImage }}" style="height: 50px"/>
+                                </div>
+                                <strong><a data-toggle="collapse" data-target="#step_{{ $parent.$index }}_{{ $index }}" aria-expanded="true"
+                                           aria-controls="step_{{ $parent.$index }}_{{ $index }}" style="font-family: monospace; cursor: pointer">
+                                    {{ step.text }}
+                                </a></strong><br/>
+                                <span ng-if="step.result === 'identical'" style="font-size: x-small">identical</span>
+                                <span ng-if="step.result === 'not found'" style="font-size: x-small">No reference screenshot was found</span>
+                                <span ng-if="step.result === 'different'" style="font-size: x-small">The screenshot did not match the reference</span>
+                            </div>
+                        </div>
+
+                        <div id="step_{{ $parent.$index }}_{{ $index }}" class="collapse hide" aria-labelledby="step_{{ $parent.$index }}_{{ $index }}" data-parent="#accordion_step_{{ $parent.$index }}">
+                            <div class="card-body">
+                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
+                                moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                                Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
+                                shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
+                                proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
+                                aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+        integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js"
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var app = angular.module('report', []);
+    app.controller('scenarios', function($scope) {
+        $scope.scenarios = report;
+    });
+</script>
+</body>
+</html>

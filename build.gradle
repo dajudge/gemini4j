@@ -1,0 +1,37 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://dl.bintray.com/palantir/releases"
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
+}
+
+ext {
+    junitVersion = "5.3.1"
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    repositories.addAll rootProject.buildscript.repositories
+    buildscript.repositories.addAll rootProject.buildscript.repositories
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    dependencies {
+        testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testCompile "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+        testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

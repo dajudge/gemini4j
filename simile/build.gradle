@@ -1,0 +1,4 @@
+dependencies {
+    compile "com.dajudge.color-diff:color-diff:0.0.3"
+    compile "org.jetbrains:annotations:13.0"
+}

@@ -11,3 +11,6 @@ build-master:
   stage: build
   script:
   - .ci/ci.sh ./gradlew clean build
+  artifacts:
+    paths:
+    - cucumber/build/reports/tests/gemini4j/

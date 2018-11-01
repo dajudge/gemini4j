@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import static com.google.common.io.Files.write;
@@ -24,7 +24,11 @@ public class ContextFactory {
     );
 
     public Gemini4jContext<?> createContext() {
-        final Consumer<byte[]> store = bytes -> noex(() -> write(bytes, new File("build/out.html")));
+        final BiConsumer<String, byte[]> store = (fname, bytes) -> noex(() -> {
+            final File file = new File("build/reports/tests/gemini4j/" + fname);
+            file.getParentFile().mkdirs();
+            write(bytes, file);
+        });
         final Supplier<InputStream> template = () -> getClass().getClassLoader()
                 .getResourceAsStream("org/gemini4j/reporter/html/templates/standard.html");
         final ReporterFactory reporterFactory = () -> new HtmlReporter(store, template);
@@ -32,7 +36,6 @@ public class ContextFactory {
             final String shot = "org/gemini4j/cucumber/shots/" + id + ".png";
             final InputStream is = getClass().getClassLoader().getResourceAsStream(shot);
             if (is == null) {
-                System.out.println("No such screenshot: " + shot);
                 return Optional.empty();
             }
             try {

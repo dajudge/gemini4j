@@ -9,24 +9,24 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HtmlReporter implements Reporter {
 
-    private final Consumer<byte[]> store;
+    private final BiConsumer<String, byte[]> store;
     private final Supplier<InputStream> template;
     private final Map<String, JSONObject> tests = new HashMap<>();
 
     private String currentTest;
 
     public HtmlReporter(
-            final Consumer<byte[]> store,
+            final BiConsumer<String, byte[]> store,
             final Supplier<InputStream> template
     ) {
         this.store = store;
@@ -58,7 +58,7 @@ public class HtmlReporter implements Reporter {
         test.put("result", "FAIL");
         final JSONObject step = new JSONObject();
         step.put("text", screenshotName);
-        step.put("takenImage", asDataUrl(takenImage));
+        step.put("takenImage", storeImage(takenImage));
         step.put("result", "not found");
         test.getJSONArray("steps").put(step);
     }
@@ -71,7 +71,7 @@ public class HtmlReporter implements Reporter {
         final JSONObject test = test(currentTest);
         final JSONObject step = new JSONObject();
         step.put("text", screenshotName);
-        step.put("takenImage", asDataUrl(takenImage));
+        step.put("takenImage", storeImage(takenImage));
         step.put("result", "identical");
         test.getJSONArray("steps").put(step);
     }
@@ -87,18 +87,20 @@ public class HtmlReporter implements Reporter {
         test.put("result", "FAIL");
         final JSONObject step = new JSONObject();
         step.put("text", screenshotName);
-        step.put("takenImage", asDataUrl(takenImage));
-        step.put("referenceImage", asDataUrl(referenceImage));
-        step.put("diffImage", asDataUrl(diff));
+        step.put("takenImage", storeImage(takenImage));
+        step.put("referenceImage", storeImage(referenceImage));
+        step.put("diffImage", storeImage(diff));
         step.put("result", "different");
         test.getJSONArray("steps").put(step);
     }
 
-    private String asDataUrl(final BufferedImage image) {
+    private String storeImage(final BufferedImage image) {
         try {
             final ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", bos);
-            return "data:image/png;base64," + Base64.getEncoder().encodeToString(bos.toByteArray());
+            final String imageName = UUID.randomUUID().toString() + ".png";
+            store.accept(imageName, bos.toByteArray());
+            return imageName;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -107,7 +109,7 @@ public class HtmlReporter implements Reporter {
     @Override
     public void shutdown() {
         final JSONArray json = new JSONArray(tests.values());
-        store.accept(getTemplate().replace("[[json]]", json.toString(4)).getBytes(UTF_8));
+        store.accept("out.html", getTemplate().replace("[[json]]", json.toString(4)).getBytes(UTF_8));
     }
 
     private String getTemplate() {

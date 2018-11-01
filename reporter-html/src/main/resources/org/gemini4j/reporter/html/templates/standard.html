@@ -4,7 +4,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
           integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-    <title>Hello, world!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.css"
+          crossorigin="anonymous">
+    <title>gemini4j report</title>
     <script type="text/javascript">
         const report = [[json]]
     </script>
@@ -12,12 +14,13 @@
 <body ng-app="report">
 <!-- NAV -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="margin-bottom: 2em">
-    <a class="navbar-brand" href="#">gemini4j-cucumber</a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="#">gemini4j report</a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbar"
+            aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="navbar-collapse collapse" style="">
+    <div class="navbar-collapse collapse" style="" id="navbar">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="#">All scenarios</a>
@@ -29,7 +32,8 @@
     </div>
 </nav>
 <div class="container" id="accordion" ng-controller="scenarios">
-    <div class="card" ng-repeat="scenario in scenarios" ng-class="{'alert-success': scenario.result === 'OK', 'alert-danger': scenario.result === 'FAIL'}">
+    <div class="card" ng-repeat="scenario in scenarios"
+         ng-class="{'alert-success': scenario.result === 'OK', 'alert-danger': scenario.result === 'FAIL'}">
         <div class="card-header" id="heading{{ $index }}">
             <h5 class="mb-0">
                 <strong><a data-toggle="collapse" data-target="#scenario{{ $index }}" aria-expanded="true"
@@ -39,24 +43,41 @@
             </h5>
         </div>
 
-        <div id="scenario{{ $index }}" class="collapse hide" aria-labelledby="scenario{{ $index }}" data-parent="#accordion">
+        <div id="scenario{{ $index }}" class="collapse hide" aria-labelledby="scenario{{ $index }}"
+             data-parent="#accordion">
             <div class="card-body">
 
                 <div class="container" id="accordion_step_{{ $index }}">
-                    <div class="card" ng-repeat="step in scenario.steps" ng-class="{'alert-success': step.result === 'identical', 'alert-danger': step.result !== 'identical'}">
+                    <div class="card" ng-repeat="step in scenario.steps"
+                         ng-class="{'alert-success': step.result === 'identical', 'alert-danger': step.result !== 'identical'}">
                         <div class="card-header" id="heading_{{ $parent.$index }}_{{ $index }}">
                             <div class="container" style="padding: 0px">
-                                <div style="float: right; margin-left: 10px" ng-if="step.result === 'different'">
-                                    <img src="{{ step.referenceImage }}" style="height: 50px"/>
+                                <div style="float: right">
+                                    <a href="{{ step.takenImage }}" style="margin-left: 10px"
+                                       data-toggle="lightbox" data-gallery="gallery{{ $parent.index }}"
+                                       data-title="{{ scenario.text }}"
+                                       data-footer="{{ step.text }} (screenshot)">
+                                        <img src="{{ step.takenImage }}" style="height: 50px" class="img-fluid"/>
+                                    </a>
+                                    <a href="{{ step.referenceImage }}" style="margin-left: 10px"
+                                       ng-if="step.result === 'different'" data-toggle="lightbox"
+                                       data-gallery="gallery{{ $parent.index }}"
+                                       data-title="{{ scenario.text }}"
+                                       data-footer="{{ step.text }} (reference image)">
+                                        <img src="{{ step.referenceImage }}" style="height: 50px" class="img-fluid"/>
+                                    </a>
+                                    <a href="{{ step.diffImage}}" style="margin-left: 10px"
+                                       ng-if="step.result === 'different'" data-toggle="lightbox"
+                                       data-gallery="gallery{{ $parent.index }}"
+                                       data-title="{{ scenario.text }}"
+                                       data-footer="{{ step.text }} (diff)">
+                                        <img src="{{ step.diffImage }}" style="height: 50px" class="img-fluid"/>
+                                    </a>
                                 </div>
-                                <div style="float: right; margin-left: 10px" ng-if="step.result === 'different'">
-                                    <img src="{{ step.diffImage }}" style="height: 50px"/>
-                                </div>
-                                <div style="float: right; margin-left: 10px">
-                                    <img src="{{ step.takenImage }}" style="height: 50px"/>
-                                </div>
-                                <strong><a data-toggle="collapse" data-target="#step_{{ $parent.$index }}_{{ $index }}" aria-expanded="true"
-                                           aria-controls="step_{{ $parent.$index }}_{{ $index }}" style="font-family: monospace; cursor: pointer">
+                                <strong><a data-toggle="collapse" data-target="#step_{{ $parent.$index }}_{{ $index }}"
+                                           aria-expanded="true"
+                                           aria-controls="step_{{ $parent.$index }}_{{ $index }}"
+                                           style="font-family: monospace; cursor: pointer">
                                     {{ step.text }}
                                 </a></strong><br/>
                                 <span ng-if="step.result === 'identical'" style="font-size: x-small">identical</span>
@@ -65,14 +86,22 @@
                             </div>
                         </div>
 
-                        <div id="step_{{ $parent.$index }}_{{ $index }}" class="collapse hide" aria-labelledby="step_{{ $parent.$index }}_{{ $index }}" data-parent="#accordion_step_{{ $parent.$index }}">
+                        <div id="step_{{ $parent.$index }}_{{ $index }}" class="collapse hide"
+                             aria-labelledby="step_{{ $parent.$index }}_{{ $index }}"
+                             data-parent="#accordion_step_{{ $parent.$index }}">
                             <div class="card-body">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
-                                moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
-                                Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
-                                shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
-                                proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
-                                aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
+                                squid. 3 wolf
+                                moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt
+                                laborum eiusmod.
+                                Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
+                                assumenda
+                                shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
+                                nesciunt sapiente ea
+                                proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer
+                                farm-to-table, raw denim
+                                aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable
+                                VHS.
                             </div>
                         </div>
                     </div>
@@ -94,10 +123,18 @@
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js"
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.3.0/ekko-lightbox.min.js"
+        crossorigin="anonymous"></script>
 <script type="text/javascript">
     var app = angular.module('report', []);
-    app.controller('scenarios', function($scope) {
+    app.controller('scenarios', function ($scope) {
         $scope.scenarios = report;
+    });
+
+    $(document).on('click', '[data-toggle="lightbox"]', function (event) {
+        event.preventDefault();
+        $(this).ekkoLightbox({wrapping: false});
+
     });
 </script>
 </body>

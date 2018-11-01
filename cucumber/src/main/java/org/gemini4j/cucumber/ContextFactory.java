@@ -24,7 +24,7 @@ public class ContextFactory {
     );
 
     public Gemini4jContext<?> createContext() {
-        final Consumer<byte[]> store = bytes -> noex(() -> write(bytes, new File("out.html")));
+        final Consumer<byte[]> store = bytes -> noex(() -> write(bytes, new File("build/out.html")));
         final Supplier<InputStream> template = () -> getClass().getClassLoader()
                 .getResourceAsStream("org/gemini4j/reporter/html/templates/standard.html");
         final ReporterFactory reporterFactory = () -> new HtmlReporter(store, template);

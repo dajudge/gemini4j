@@ -3,6 +3,7 @@ dependencies {
     compile "org.seleniumhq.selenium:selenium-java:3.14.0"
 
     testCompile project(":simile")
+    testCompile libJunit4
     testCompile 'com.palantir.docker.compose:docker-compose-rule-junit4:0.34.0'
 
     testRuntime 'ch.qos.logback:logback-classic:1.2.3'

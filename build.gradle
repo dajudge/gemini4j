@@ -12,7 +12,7 @@ task wrapper(type: Wrapper) {
 }
 
 ext {
-    junitVersion = "5.3.1"
+    libJunit4 = "junit:junit:4.12"
 }
 
 subprojects {
@@ -25,14 +25,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    dependencies {
-        testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-        testCompile "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
-        testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-    }
-
     test {
-        useJUnitPlatform()
         testLogging {
             showStandardStreams = true
         }

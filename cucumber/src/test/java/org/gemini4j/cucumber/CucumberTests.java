@@ -14,7 +14,7 @@ import static com.palantir.docker.compose.connection.waiting.HealthChecks.toResp
 @CucumberOptions(plugin = {"org.gemini4j.cucumber.Gemini4jPlugin"})
 public class CucumberTests {
     @ClassRule
-    private static DockerComposeRule DOCKER = dynamicMachine(DockerComposeRule.builder())
+    public static DockerComposeRule DOCKER = dynamicMachine(DockerComposeRule.builder())
             .pullOnStartup(true)
             .file("src/test/docker/docker-compose.yml")
             .saveLogsTo("build/test-docker-logs")

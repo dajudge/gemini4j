@@ -10,5 +10,4 @@ services:
 build-master:
   stage: build
   script:
-  - ./ci.sh ./gradlew clean build
-  - ls -laR /var/lib/
+  - .ci/ci.sh ./gradlew clean build

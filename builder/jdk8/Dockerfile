@@ -1,6 +1,6 @@
 FROM java:openjdk-8u111-jdk-alpine
 
-RUN apk update && apk add -y 'py-pip==8.1.2-r0' curl wget bash && \
+RUN apk update && apk add 'py-pip==8.1.2-r0' curl wget bash && \
     # Docker compose
     pip install 'docker-compose==1.8.0' && \
     # Docker client tools

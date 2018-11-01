@@ -1,10 +1,14 @@
 image: docker:latest
 
+cache:
+  paths:
+  - .cache/
+
 services:
 - docker:dind
 
 build-master:
   stage: build
   script:
-  - docker build --pull -t builder_jdk8 builder/jdk8
-  - docker run --rm -v "$CI_PROJECT_DIR":/project --workdir /project builder_jdk8 /project/gradlew clean build --stacktrace
+  - ./ci.sh ./gradlew clean build
+  - ls -laR /var/lib/

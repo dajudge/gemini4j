@@ -1,0 +1,6 @@
+dependencies {
+    compile project(":core")
+
+    testCompile libJunit4
+    testCompile 'org.mockito:mockito-all:1.9.5'
+}

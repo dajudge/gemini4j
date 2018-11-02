@@ -1,5 +1,4 @@
 dependencies {
     compile project(":simile")
 
-    testCompile "org.mockito:mockito-junit-jupiter:2.21.0"
 }

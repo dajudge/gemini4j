@@ -2,9 +2,9 @@ package org.gemini4j.selenium;
 
 import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.connection.DockerMachine;
-import org.gemini4j.core.Gemini4j;
-import org.gemini4j.core.ScreenshotProcessor;
-import org.gemini4j.core.SuiteBuilder;
+import org.gemini4j.diesel.Gemini4j;
+import org.gemini4j.diesel.ScreenshotProcessor;
+import org.gemini4j.diesel.SuiteBuilder;
 import org.gemini4j.simile.Simile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.ClassRule;

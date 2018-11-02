@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":core")
+    compile project(":diesel")
     compile "org.seleniumhq.selenium:selenium-java:3.14.0"
 
     testCompile project(":simile")

@@ -1,4 +1,4 @@
-package org.gemini4j.core;
+package org.gemini4j.diesel;
 
 import org.gemini4j.api.Browser;
 

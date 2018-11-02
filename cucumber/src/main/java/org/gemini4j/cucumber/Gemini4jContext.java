@@ -1,7 +1,7 @@
 package org.gemini4j.cucumber;
 
-import org.gemini4j.core.Browser;
-import org.gemini4j.core.BrowserFactory;
+import org.gemini4j.api.Browser;
+import org.gemini4j.plugins.BrowserFactory;
 import org.gemini4j.core.Shite;
 import org.gemini4j.reporter.Reporter;
 import org.gemini4j.utils.Shutdown;

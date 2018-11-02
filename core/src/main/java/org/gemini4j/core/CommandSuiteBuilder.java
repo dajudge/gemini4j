@@ -1,5 +1,7 @@
 package org.gemini4j.core;
 
+import org.gemini4j.api.Browser;
+import org.gemini4j.plugins.BrowserFactory;
 import org.gemini4j.utils.Clock;
 
 import java.net.URL;

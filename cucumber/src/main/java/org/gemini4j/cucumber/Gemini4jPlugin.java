@@ -2,17 +2,18 @@ package org.gemini4j.cucumber;
 
 import cucumber.api.PickleStepTestStep;
 import cucumber.api.event.*;
-import org.gemini4j.core.Browser;
+import org.gemini4j.api.Browser;
+import org.openqa.selenium.WebDriver;
 
 public class Gemini4jPlugin implements EventListener {
     private static ContextFactory CONTEXT_FACTORY = new ContextFactory();
     private static ThreadLocal<Gemini4jContext<?>> THREAD_CONTEXT = new ThreadLocal<>();
 
-    private static synchronized Gemini4jContext<?> getOrCreateContext() {
+    private static synchronized <T> Gemini4jContext<T> getOrCreateContext(final Class<T> implementationClass) {
         if (THREAD_CONTEXT.get() == null) {
-            THREAD_CONTEXT.set(CONTEXT_FACTORY.createContext());
+            THREAD_CONTEXT.set(CONTEXT_FACTORY.createContext(implementationClass));
         }
-        return THREAD_CONTEXT.get();
+        return (Gemini4jContext<T>) THREAD_CONTEXT.get();
     }
 
     private static void shutdownContextIfExists() {
@@ -23,17 +24,17 @@ public class Gemini4jPlugin implements EventListener {
     }
 
     public static <T> Browser<T> getBrowser(Class<T> implementationClass) {
-        return (Browser<T>) getOrCreateContext().getBrowser();
+        return getOrCreateContext(implementationClass).getBrowser();
     }
 
     @Override
     public void setEventPublisher(final EventPublisher publisher) {
         publisher.registerHandlerFor(TestCaseStarted.class, event -> {
-            getOrCreateContext().getShite().nextTest(event.testCase.getName());
+            getOrCreateContext(WebDriver.class).getShite().nextTest(event.testCase.getName());
         });
         publisher.registerHandlerFor(TestStepFinished.class, event -> {
             final PickleStepTestStep testStep = (PickleStepTestStep) event.testStep;
-            getOrCreateContext().getShite().snap(testStep.getStepText());
+            getOrCreateContext(WebDriver.class).getShite().snap(testStep.getStepText());
         });
         publisher.registerHandlerFor(TestRunFinished.class, event -> shutdownContextIfExists());
     }

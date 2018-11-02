@@ -1,7 +1,7 @@
 package org.gemini4j.selenium;
 
-import org.gemini4j.core.Browser;
-import org.gemini4j.core.BrowserFactory;
+import org.gemini4j.api.Browser;
+import org.gemini4j.plugins.BrowserFactory;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;

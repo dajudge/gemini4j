@@ -1,0 +1,27 @@
+def dockerRegistryUrl() {
+    env.DOCKER_REGISTRY
+}
+
+def getImageName() {
+    "${dockerRegistryUrl()}/gemini4j:latest"
+}
+
+node {
+    stage ("Checkout") {
+        checkout scm
+    }
+    stage ("Build docker image") {
+        dir ("site") {
+            def imageName = getImageName()
+            println "Building $imageName..."
+            docker.withRegistry("https://${dockerRegistryUrl()}", 'local_docker_registry') {
+                def image = docker.build(imageName)
+                image.push()
+            }
+        }
+    }
+    stage ("Deploy to k8s") {
+	    sh "kubectl delete --wait=true --ignore-not-found=true namespace gemini4j"
+        sh "kubectl apply -f app.yml"
+    }
+}

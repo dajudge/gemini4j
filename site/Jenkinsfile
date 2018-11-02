@@ -21,7 +21,9 @@ node {
         }
     }
     stage ("Deploy to k8s") {
-	    sh "kubectl delete --wait=true --ignore-not-found=true namespace gemini4j"
-        sh "kubectl apply -f app.yml"
+        dir ("site") {
+            sh "kubectl delete --wait=true --ignore-not-found=true namespace gemini4j"
+            sh "kubectl apply -f app.yml"
+        }
     }
 }

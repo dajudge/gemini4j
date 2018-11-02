@@ -1,5 +1,6 @@
 package org.gemini4j.core;
 
+import org.gemini4j.api.Browser;
 import org.gemini4j.reporter.Reporter;
 import org.gemini4j.simile.Simile;
 

@@ -2,7 +2,7 @@ package org.gemini4j.cucumber.steps;
 
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
-import org.gemini4j.core.Browser;
+import org.gemini4j.api.Browser;
 import org.gemini4j.cucumber.Gemini4jPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;

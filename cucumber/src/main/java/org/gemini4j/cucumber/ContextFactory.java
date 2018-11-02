@@ -1,9 +1,8 @@
 package org.gemini4j.cucumber;
 
 import org.gemini4j.core.Shite;
+import org.gemini4j.plugins.BrowserFactory;
 import org.gemini4j.reporter.html.HtmlReporter;
-import org.gemini4j.selenium.RemoteWebDriverBrowserFactory;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -17,13 +16,8 @@ import static com.google.common.io.Files.write;
 import static org.gemini4j.utils.NoExceptions.noex;
 
 public class ContextFactory {
-
-    private static final RemoteWebDriverBrowserFactory BROWSER_FACTORY = new RemoteWebDriverBrowserFactory(
-            "http://localhost:4444/wd/hub",
-            new ChromeOptions()
-    );
-
-    public Gemini4jContext<?> createContext() {
+    public <T> Gemini4jContext<T> createContext(Class<T> integrationType) {
+        final BrowserFactory<T> browserFactory = BrowserIntegrationDiscovery.INSTANCE.findFactoryFor(integrationType);
         final BiConsumer<String, byte[]> store = (fname, bytes) -> noex(() -> {
             final File file = new File("build/reports/tests/gemini4j/" + fname);
             file.getParentFile().mkdirs();
@@ -50,6 +44,6 @@ public class ContextFactory {
                 }
             }
         };
-        return new Gemini4jContext<>(reporterFactory, BROWSER_FACTORY, images);
+        return new Gemini4jContext<>(reporterFactory, browserFactory, images);
     }
 }

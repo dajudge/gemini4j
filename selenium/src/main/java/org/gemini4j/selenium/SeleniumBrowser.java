@@ -1,6 +1,6 @@
 package org.gemini4j.selenium;
 
-import org.gemini4j.core.Browser;
+import org.gemini4j.api.Browser;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;

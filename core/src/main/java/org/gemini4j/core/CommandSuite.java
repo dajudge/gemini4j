@@ -1,5 +1,8 @@
 package org.gemini4j.core;
 
+import org.gemini4j.api.Browser;
+import org.gemini4j.plugins.BrowserFactory;
+
 import java.util.List;
 
 class CommandSuite<B> implements Suite {

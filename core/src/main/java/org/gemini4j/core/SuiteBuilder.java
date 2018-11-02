@@ -1,5 +1,7 @@
 package org.gemini4j.core;
 
+import org.gemini4j.api.Browser;
+
 import java.net.URL;
 import java.util.function.Consumer;
 import java.util.function.Function;

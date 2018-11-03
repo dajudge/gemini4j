@@ -14,7 +14,6 @@ stages:
 build:
   stage: build
   script:
-  - docker ps -a
   - .ci/ci.sh ./gradlew clean build --stacktrace
   artifacts:
     when: always

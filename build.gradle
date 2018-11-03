@@ -1,3 +1,5 @@
+println System.getenv()
+
 buildscript {
     repositories {
         mavenCentral()

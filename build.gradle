@@ -1,5 +1,3 @@
-println "DOCKER_HOST: ${System.getenv("DOCKER_HOST")}"
-
 buildscript {
     repositories {
         mavenCentral()
@@ -12,6 +10,8 @@ buildscript {
 plugins {
     id "org.sonarqube" version "2.6"
 }
+
+println "DOCKER_HOST: ${System.getenv("DOCKER_HOST")}"
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'

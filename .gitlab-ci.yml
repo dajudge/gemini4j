@@ -16,9 +16,10 @@ build:
   script:
   - .ci/ci.sh ./gradlew clean build
   artifacts:
-    paths:
-    - cucumber/build/reports/tests/gemini4j/
-    - cucumber/build/reports/tests/test/
+    reports:
+      junit:
+        - cucumber/build/reports/tests/gemini4j/
+        - cucumber/build/reports/tests/test/
 
 sonar:
   stage: verification

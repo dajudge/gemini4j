@@ -55,7 +55,7 @@ public class Shite {
     private String sanitize(final String string) {
         final String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         final String spaceChars = "\n\t ";
-        final StringBuffer ret = new StringBuffer();
+        final StringBuilder ret = new StringBuilder();
         final char[] chars = string.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             final char c = chars[i];

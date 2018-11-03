@@ -28,9 +28,9 @@ public class Gemini4jPlugin implements EventListener {
 
     @Override
     public void setEventPublisher(final EventPublisher publisher) {
-        publisher.registerHandlerFor(TestCaseStarted.class, event -> {
-            context.getShite().nextTest(event.testCase.getName());
-        });
+        publisher.registerHandlerFor(TestCaseStarted.class, event ->
+                context.getShite().nextTest(event.testCase.getName())
+        );
         publisher.registerHandlerFor(TestStepFinished.class, event -> {
             final PickleStepTestStep testStep = (PickleStepTestStep) event.testStep;
             if (browser != null) {

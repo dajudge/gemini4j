@@ -9,12 +9,11 @@ services:
 
 stages:
 - build
-- verification
 
 build:
   stage: build
   script:
-  - .ci/ci.sh ./gradlew clean build --stacktrace
+  - .ci/ci.sh ./gradlew clean build jacocoTestReport sonarqube -Dsonar.projectKey=dajudge_gemini4j -Dsonar.organization=dajudge-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_TOKEN} --stacktrace
   artifacts:
     when: always
     paths:
@@ -23,8 +22,3 @@ build:
     reports:
       junit:
         - "*/build/test-results/test/TEST-*.xml"
-
-sonar:
-  stage: verification
-  script:
-  - .ci/ci.sh ./gradlew sonarqube -Dsonar.projectKey=dajudge_gemini4j -Dsonar.organization=dajudge-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_TOKEN} --stacktrace

@@ -23,12 +23,22 @@ ext {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'jacoco'
 
     repositories.addAll rootProject.buildscript.repositories
     buildscript.repositories.addAll rootProject.buildscript.repositories
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
+    }
+
+    jacocoTestReport {
+        group = "Reporting"
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination "${buildDir}/reports/coverage"
+        }
     }
 
     test {

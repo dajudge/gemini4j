@@ -18,8 +18,8 @@ build:
   artifacts:
     reports:
       junit:
-        - cucumber/build/reports/tests/gemini4j/
-        - cucumber/build/reports/tests/test/
+
+        - cucumber/build/reports/tests/test/TEST-*.xml
 
 sonar:
   stage: verification

@@ -4,7 +4,7 @@ import org.gemini4j.core.Shite;
 import org.gemini4j.reporter.Reporter;
 import org.gemini4j.utils.Shutdown;
 
-class Gemini4jContext<T> implements Shutdown {
+class Gemini4jContext implements Shutdown {
 
     private final Reporter reporter;
     private final Shite shite;

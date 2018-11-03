@@ -18,4 +18,4 @@ class CaretDetectedState extends State {
         return point.x >= this.getCaretTopLeft().x && point.x <= this.getCaretBottomRight().x
                 && point.y >= this.getCaretTopLeft().y && point.y <= this.getCaretBottomRight().y;
     }
-};
+}

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static java.util.Arrays.asList;
 import static org.gemini4j.simile.caret.StateEnum.CARET_DETECTED_STATE;
@@ -34,7 +35,7 @@ class InitState extends State {
         return true;
     }
 
-    private class PointFunc implements Function<Point, Point> {
+    private class PointFunc implements UnaryOperator<Point> {
 
         private final BufferedImage img1;
         private final BufferedImage img2;
@@ -57,6 +58,15 @@ class InitState extends State {
                     ? currPoint
                     : apply(nextPoint);
         }
+
+        private Point getNextCaretPoint(final Point firstCaretPoint, final Point currPoint) {
+            final int nextX = currPoint.x + 1;
+
+            return nextX < firstCaretPoint.x + getPixelRatio()
+                    ? new Point(nextX, currPoint.y)
+                    : new Point(firstCaretPoint.x, currPoint.y + 1);
+        }
+
     }
 
     private Point getLastCaretPoint(
@@ -80,14 +90,6 @@ class InitState extends State {
         final int color2 = img2.getRGB(point.x, point.y);
 
         return color1 == color2;
-    }
-
-    private Point getNextCaretPoint(final Point firstCaretPoint, final Point currPoint) {
-        final int nextX = currPoint.x + 1;
-
-        return nextX < firstCaretPoint.x + getPixelRatio()
-                ? new Point(nextX, currPoint.y)
-                : new Point(firstCaretPoint.x, currPoint.y + 1);
     }
 
     private boolean looksLikeCaret(final Point firstCaretPoint, final Point lastCaretPoint) {

@@ -5,7 +5,7 @@ import cucumber.api.event.*;
 import org.gemini4j.api.Browser;
 
 public class Gemini4jPlugin implements EventListener {
-    private final Gemini4jContext<?> context = new ContextFactory().createContext();
+    private final Gemini4jContext context = new ContextFactory().createContext();
     private static Browser<?> browser;
 
     private static <T> Browser<T> getOrCreateBrowser(Gemini4jConfiguration<T> config) {

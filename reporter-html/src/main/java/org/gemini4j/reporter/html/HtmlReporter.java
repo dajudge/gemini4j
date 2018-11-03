@@ -19,6 +19,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HtmlReporter implements Reporter {
 
+    private static final String KEY_TEXT = "text";
+    private static final String KEY_RESULT = "result";
+    private static final String KEY_STEPS = "steps";
+    private static final String KEY_TAKEN_IMAGE = "takenImage";
+
     private final BiConsumer<String, byte[]> store;
     private final Supplier<InputStream> template;
     private final Map<String, JSONObject> tests = new HashMap<>();
@@ -36,9 +41,9 @@ public class HtmlReporter implements Reporter {
     private JSONObject test(final String testName) {
         if (!tests.containsKey(testName)) {
             final JSONObject test = new JSONObject();
-            test.put("text", testName);
-            test.put("result", "OK");
-            test.put("steps", new JSONArray());
+            test.put(KEY_TEXT, testName);
+            test.put(KEY_RESULT, "OK");
+            test.put(KEY_STEPS, new JSONArray());
             tests.put(testName, test);
         }
         return tests.get(testName);
@@ -55,12 +60,12 @@ public class HtmlReporter implements Reporter {
             final BufferedImage takenImage
     ) {
         final JSONObject test = test(currentTest);
-        test.put("result", "FAIL");
+        test.put(KEY_RESULT, "FAIL");
         final JSONObject step = new JSONObject();
-        step.put("text", screenshotName);
-        step.put("takenImage", storeImage(takenImage));
-        step.put("result", "not found");
-        test.getJSONArray("steps").put(step);
+        step.put(KEY_TEXT, screenshotName);
+        step.put(KEY_TAKEN_IMAGE, storeImage(takenImage));
+        step.put(KEY_RESULT, "not found");
+        test.getJSONArray(KEY_STEPS).put(step);
     }
 
     @Override
@@ -70,10 +75,10 @@ public class HtmlReporter implements Reporter {
     ) {
         final JSONObject test = test(currentTest);
         final JSONObject step = new JSONObject();
-        step.put("text", screenshotName);
-        step.put("takenImage", storeImage(takenImage));
-        step.put("result", "identical");
-        test.getJSONArray("steps").put(step);
+        step.put(KEY_TEXT, screenshotName);
+        step.put(KEY_TAKEN_IMAGE, storeImage(takenImage));
+        step.put(KEY_RESULT, "identical");
+        test.getJSONArray(KEY_STEPS).put(step);
     }
 
     @Override
@@ -84,14 +89,14 @@ public class HtmlReporter implements Reporter {
             final BufferedImage diff
     ) {
         final JSONObject test = test(currentTest);
-        test.put("result", "FAIL");
+        test.put(KEY_RESULT, "FAIL");
         final JSONObject step = new JSONObject();
-        step.put("text", screenshotName);
-        step.put("takenImage", storeImage(takenImage));
+        step.put(KEY_TEXT, screenshotName);
+        step.put(KEY_TAKEN_IMAGE, storeImage(takenImage));
         step.put("referenceImage", storeImage(referenceImage));
         step.put("diffImage", storeImage(diff));
-        step.put("result", "different");
-        test.getJSONArray("steps").put(step);
+        step.put(KEY_RESULT, "different");
+        test.getJSONArray(KEY_STEPS).put(step);
     }
 
     private String storeImage(final BufferedImage image) {

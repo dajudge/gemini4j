@@ -39,4 +39,4 @@ abstract class State {
     void setCaretBottomRight(final Point point) {
         comparator.setCaretBottomRight(point);
     }
-};
+}

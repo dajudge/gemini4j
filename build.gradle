@@ -1,4 +1,4 @@
-println System.getenv()
+println "DOCKER_HOST: ${System.getenv("DOCKER_HOST")}"
 
 buildscript {
     repositories {

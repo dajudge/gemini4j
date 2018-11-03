@@ -19,7 +19,7 @@ build:
     reports:
       junit:
 
-        - cucumber/build/reports/tests/test/TEST-*.xml
+        - cucumber/build/test-results/test/TEST-*.xml
 
 sonar:
   stage: verification

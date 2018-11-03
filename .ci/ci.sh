@@ -10,5 +10,5 @@ docker run --rm \
     -v "${CI_PROJECT_DIR}":/project \
     -v "${CI_PROJECT_DIR}/.cache/.gradle":/root/.gradle \
     --workdir /project \
-    -it builder_jdk8 \
+    builder_jdk8 \
     $@

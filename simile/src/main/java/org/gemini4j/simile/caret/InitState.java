@@ -3,7 +3,6 @@ package org.gemini4j.simile.caret;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Collection;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static java.util.Arrays.asList;
@@ -41,7 +40,7 @@ class InitState extends State {
         private final BufferedImage img2;
         private Point firstCaretPoint;
 
-         PointFunc(
+        PointFunc(
                 final BufferedImage img1,
                 final BufferedImage img2,
                 final Point firstCaretPoint) {
@@ -59,6 +58,10 @@ class InitState extends State {
                     : apply(nextPoint);
         }
 
+        private boolean isPointOutsideImages(final Point point, final Collection<BufferedImage> imgs) {
+            return imgs.stream().anyMatch(img -> point.x >= img.getWidth() || point.y >= img.getHeight());
+        }
+
         private Point getNextCaretPoint(final Point firstCaretPoint, final Point currPoint) {
             final int nextX = currPoint.x + 1;
 
@@ -67,6 +70,16 @@ class InitState extends State {
                     : new Point(firstCaretPoint.x, currPoint.y + 1);
         }
 
+        private boolean areColorsSame(
+                final Point point,
+                final BufferedImage img1,
+                final BufferedImage img2
+        ) {
+            final int color1 = img1.getRGB(point.x, point.y);
+            final int color2 = img2.getRGB(point.x, point.y);
+
+            return color1 == color2;
+        }
     }
 
     private Point getLastCaretPoint(
@@ -77,20 +90,8 @@ class InitState extends State {
         return new PointFunc(img1, img2, firstCaretPoint).apply(firstCaretPoint);
     }
 
-    private static boolean isPointOutsideImages(final Point point, final Collection<BufferedImage> imgs) {
-        return imgs.stream().anyMatch((img) -> point.x >= img.getWidth() || point.y >= img.getHeight());
-    }
 
-    private static boolean areColorsSame(
-            final Point point,
-            final BufferedImage img1,
-            final BufferedImage img2
-    ) {
-        final int color1 = img1.getRGB(point.x, point.y);
-        final int color2 = img2.getRGB(point.x, point.y);
 
-        return color1 == color2;
-    }
 
     private boolean looksLikeCaret(final Point firstCaretPoint, final Point lastCaretPoint) {
         return caretHeight(firstCaretPoint, lastCaretPoint) > 1

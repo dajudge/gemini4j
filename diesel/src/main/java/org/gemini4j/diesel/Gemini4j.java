@@ -7,6 +7,10 @@ public class Gemini4j {
     private static final Clock clock = Clock.create();
     private static final long DEFAULT_WAIT_FOR_TIMEOUT = 10000l;
 
+    private Gemini4j() {
+
+    }
+
     public static <B> SuiteBuilder<B> suite(
             final BrowserFactory<B> browserFactory,
             final ScreenshotProcessor screenshotProcessor

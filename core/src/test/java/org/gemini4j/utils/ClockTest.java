@@ -15,8 +15,8 @@ public class ClockTest {
     @Test
     public void waits() {
         long start = subject.now();
-        subject.waitFor(100);
+        subject.waitFor(500);
         long now = subject.now();
-        assertTrue(now - start > 100);
+        assertTrue(now > start);
     }
 }

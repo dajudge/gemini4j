@@ -9,7 +9,6 @@ dependencies {
     compile project(":reporter-html")
 
     testCompile project(":selenium")
-    testCompile project(":test-base")
     testCompile "com.google.inject:guice:4.2.1"
     testRuntime "com.google.guava:guava:27.0-jre"
     testRuntime 'ch.qos.logback:logback-classic:1.2.3'

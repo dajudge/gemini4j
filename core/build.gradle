@@ -1,5 +1,3 @@
 dependencies {
     compile project(":simile")
-
-    testCompile project(":test-base")
 }

@@ -19,7 +19,6 @@ import java.io.InputStream;
 
 import static com.palantir.docker.compose.connection.waiting.HealthChecks.toRespondOverHttp;
 import static org.gemini4j.simile.Simile.newSimile;
-import static org.gemini4j.test.DynamicDockerMachine.dynamicMachine;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
@@ -30,7 +29,7 @@ public class SeleniumBrowserTest {
     );
 
     @ClassRule
-    public static DockerComposeRule DOCKER = dynamicMachine(DockerComposeRule.builder())
+    public static DockerComposeRule DOCKER = DockerComposeRule.builder()
             .file("src/test/docker/docker-compose.yml")
             .saveLogsTo("build/test-docker-logs")
             .waitingForService("selenium-hub", toRespondOverHttp(4444, p -> p.inFormat("http://$HOST:$EXTERNAL_PORT")))

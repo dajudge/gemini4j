@@ -3,6 +3,5 @@ dependencies {
     compile "org.seleniumhq.selenium:selenium-java:3.14.0"
 
     testCompile project(":simile")
-    testCompile project(":test-base")
     testRuntime 'ch.qos.logback:logback-classic:1.2.3'
 }

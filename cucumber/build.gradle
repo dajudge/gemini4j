@@ -7,11 +7,10 @@ dependencies {
     compile "io.cucumber:cucumber-java:$cucumberVersion"
     compile "io.cucumber:cucumber-guice:$cucumberVersion"
     compile project(":reporter-html")
-    compile project(":selenium") // should be test-compile only
 
+    testCompile project(":selenium")
+    testCompile project(":test-base")
     testCompile "com.google.inject:guice:4.2.1"
-    testCompile "com.palantir.docker.compose:docker-compose-rule-junit4:0.34.0"
-
     testRuntime "com.google.guava:guava:27.0-jre"
     testRuntime 'ch.qos.logback:logback-classic:1.2.3'
 }

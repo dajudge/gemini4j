@@ -1,18 +1,17 @@
 package org.gemini4j.cucumber;
 
 import org.gemini4j.core.Shite;
-import org.gemini4j.plugins.BrowserFactory;
 import org.gemini4j.reporter.html.HtmlReporter;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import static com.google.common.io.Files.write;
 import static org.gemini4j.utils.NoExceptions.noex;
 
 public class ContextFactory {
@@ -20,7 +19,7 @@ public class ContextFactory {
         final BiConsumer<String, byte[]> store = (fname, bytes) -> noex(() -> {
             final File file = new File("build/reports/tests/gemini4j/" + fname);
             file.getParentFile().mkdirs();
-            write(bytes, file);
+            Files.write(file.toPath(), bytes);
         });
         final Supplier<InputStream> template = () -> getClass().getClassLoader()
                 .getResourceAsStream("org/gemini4j/reporter/html/templates/standard.html");

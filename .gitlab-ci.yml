@@ -14,7 +14,7 @@ stages:
 build:
   stage: build
   script:
-  - .ci/ci.sh ./gradlew clean build
+  - .ci/ci.sh ./gradlew clean build --stacktrace
   artifacts:
     when: always
     paths:
@@ -27,4 +27,4 @@ build:
 sonar:
   stage: verification
   script:
-  - .ci/ci.sh ./gradlew sonarqube -Dsonar.projectKey=dajudge_gemini4j -Dsonar.organization=dajudge-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_TOKEN}
+  - .ci/ci.sh ./gradlew sonarqube -Dsonar.projectKey=dajudge_gemini4j -Dsonar.organization=dajudge-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONAR_TOKEN} --stacktrace

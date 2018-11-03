@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import static org.gemini4j.utils.NoExceptions.noex;
 
 public class ContextFactory {
-    public <T> Gemini4jContext<T> createContext() {
+    public <T> Gemini4jContext createContext() {
         final BiConsumer<String, byte[]> store = (fname, bytes) -> noex(() -> {
             final File file = new File("build/reports/tests/gemini4j/" + fname);
             file.getParentFile().mkdirs();
@@ -42,6 +42,6 @@ public class ContextFactory {
                 }
             }
         };
-        return new Gemini4jContext<>(reporterFactory, images);
+        return new Gemini4jContext(reporterFactory, images);
     }
 }

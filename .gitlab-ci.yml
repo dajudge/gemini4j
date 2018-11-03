@@ -18,6 +18,7 @@ build:
   artifacts:
     paths:
     - cucumber/build/reports/tests/gemini4j/
+    - cucumber/build/reports/tests/test/
 
 sonar:
   stage: verification

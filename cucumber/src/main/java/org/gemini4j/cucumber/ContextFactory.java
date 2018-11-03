@@ -16,8 +16,7 @@ import static com.google.common.io.Files.write;
 import static org.gemini4j.utils.NoExceptions.noex;
 
 public class ContextFactory {
-    public <T> Gemini4jContext<T> createContext(Class<T> integrationType) {
-        final BrowserFactory<T> browserFactory = BrowserIntegrationDiscovery.INSTANCE.findFactoryFor(integrationType);
+    public <T> Gemini4jContext<T> createContext() {
         final BiConsumer<String, byte[]> store = (fname, bytes) -> noex(() -> {
             final File file = new File("build/reports/tests/gemini4j/" + fname);
             file.getParentFile().mkdirs();
@@ -44,6 +43,6 @@ public class ContextFactory {
                 }
             }
         };
-        return new Gemini4jContext<>(reporterFactory, browserFactory, images);
+        return new Gemini4jContext<>(reporterFactory, images);
     }
 }

@@ -12,17 +12,14 @@ public class Shite {
         Optional<BufferedImage> findImage(String imageId);
     }
 
-    private final Browser<?> browser;
     private final Reporter reporter;
     private final ReferenceImageResolver referenceImages;
     private int imageIndex;
 
     public Shite(
-            final Browser<?> browser,
             final Reporter reporter,
             final ReferenceImageResolver referenceImages
     ) {
-        this.browser = browser;
         this.reporter = reporter;
         this.referenceImages = referenceImages;
     }
@@ -31,7 +28,7 @@ public class Shite {
         reporter.nextTest(name);
     }
 
-    public void snap(final String screenshotName) {
+    public void snap(final Browser<?> browser, final String screenshotName) {
         final String imageId = imageId(imageIndex++, screenshotName);
         final BufferedImage takenImage = browser.takeScreenshot();
         final Optional<BufferedImage> referenceImage = referenceImages.findImage(imageId);

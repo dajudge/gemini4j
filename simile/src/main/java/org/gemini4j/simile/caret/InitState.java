@@ -102,4 +102,4 @@ class InitState extends State {
     private static int caretWidth(final Point firstCaretPoint, final Point lastCaretPoint) {
         return (lastCaretPoint.x - firstCaretPoint.x) + 1;
     }
-};
+}

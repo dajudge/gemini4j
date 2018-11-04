@@ -29,11 +29,12 @@ spec:
   template:
     metadata:
       labels:
+        timestamp: "${System.currentTimeMillis()}"
         app: gemini4j
     spec:
       containers:
       - name: nginx
-        image: docker.alexstockinger.com:443/gemini4j:latest
+        image: ${env.DOCKER_REGISTRY}/gemini4j:latest
         ports:
         - containerPort: 80
       imagePullSecrets:

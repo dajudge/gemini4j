@@ -60,7 +60,7 @@ metadata:
   name: gemini4j
   namespace: gemini4j
   annotations:
-    certmanager.k8s.io/cluster-issuer: 'letsencrypt-staging'
+    certmanager.k8s.io/cluster-issuer: 'letsencrypt-prod'
 spec:
   rules:
   - host: 'www.gemini4j.org'

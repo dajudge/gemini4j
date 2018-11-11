@@ -1,6 +1,6 @@
 package org.gemini4j.diesel;
 
-import org.gemini4j.api.Browser;
+import org.gemini4j.browser.Browser;
 import org.gemini4j.utils.Clock;
 import org.junit.Before;
 import org.junit.Test;

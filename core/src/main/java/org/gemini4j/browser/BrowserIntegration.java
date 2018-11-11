@@ -1,4 +1,4 @@
-package org.gemini4j.plugins;
+package org.gemini4j.browser;
 
 import java.util.Optional;
 

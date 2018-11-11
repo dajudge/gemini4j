@@ -1,6 +1,6 @@
 package org.gemini4j.diesel;
 
-import org.gemini4j.plugins.BrowserFactory;
+import org.gemini4j.browser.BrowserFactory;
 import org.gemini4j.utils.Clock;
 
 public class Gemini4j {

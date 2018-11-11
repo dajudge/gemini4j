@@ -1,4 +1,4 @@
-package org.gemini4j.cucumber.steps;
+package org.gemini4j.cucumber;
 
 import org.gemini4j.browser.BrowserFactory;
 import org.gemini4j.core.Gemini4jConfiguration;
@@ -63,7 +63,7 @@ public class Config implements Gemini4jConfiguration<WebDriver> {
 
     @Override
     public ReporterFactory getReporterFactory() {
-        return REPORTER_FACTORY;
+        return () -> CucumberTests.REPORTER;
     }
 
     @Override

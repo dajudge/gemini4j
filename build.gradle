@@ -7,12 +7,30 @@ buildscript {
     }
 }
 
+plugins {
+    id "org.sonarqube" version "2.6"
+}
+
+println "DOCKER_HOST: ${System.getenv("DOCKER_HOST")}"
+
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
 }
 
 ext {
     libJunit4 = "junit:junit:4.12"
+}
+
+def jacocoDestination = "$rootProject.buildDir/jacoco/test.exec"
+
+sonarqube {
+    properties {
+        property "sonar.jacoco.reportPaths", jacocoDestination
+    }
+}
+
+allprojects {
+    apply plugin: 'jacoco'
 }
 
 subprojects {
@@ -23,6 +41,17 @@ subprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
+    }
+
+    project.tasks.withType(Test) {
+        jacocoTestReport.reports.xml.enabled = true
+        jacoco.destinationFile = file(jacocoDestination)
+    }
+
+    dependencies {
+        testCompile "com.palantir.docker.compose:docker-compose-rule-junit4:0.34.0"
+        testCompile libJunit4
+        testCompile 'org.mockito:mockito-all:1.9.5'
     }
 
     test {

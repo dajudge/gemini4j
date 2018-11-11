@@ -1,7 +1,7 @@
 package org.gemini4j.utils;
 
 public interface Clock {
-    public static Clock create() {
+    static Clock create() {
         return new Clock() {
 
             @Override
@@ -14,13 +14,13 @@ public interface Clock {
                 try {
                     Thread.sleep(msecs);
                 } catch (final InterruptedException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException("Interrupted while waiting", e);
                 }
             }
         };
     }
 
-    public long now();
+    long now();
 
-    public void waitFor(long msecs);
+    void waitFor(long msecs);
 }

@@ -1,4 +1,4 @@
-package org.gemini4j.api;
+package org.gemini4j.browser;
 
 import org.gemini4j.utils.Shutdown;
 

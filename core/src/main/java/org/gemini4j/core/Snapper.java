@@ -1,34 +1,35 @@
 package org.gemini4j.core;
 
-import org.gemini4j.api.Browser;
+import org.gemini4j.browser.Browser;
+import org.gemini4j.imageresolver.ReferenceImageResolver;
 import org.gemini4j.reporter.Reporter;
 import org.gemini4j.simile.Simile;
 
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 
-public class Shite {
-    public interface ReferenceImageResolver {
-        Optional<BufferedImage> findImage(String imageId);
-    }
+public class Snapper<T> {
 
     private final Reporter reporter;
     private final ReferenceImageResolver referenceImages;
+    private final Browser<T> browser;
     private int imageIndex;
 
-    public Shite(
+    public Snapper(
             final Reporter reporter,
-            final ReferenceImageResolver referenceImages
+            final ReferenceImageResolver referenceImages,
+            final Browser<T> browser
     ) {
         this.reporter = reporter;
         this.referenceImages = referenceImages;
+        this.browser = browser;
     }
 
     public void nextTest(final String name) {
         reporter.nextTest(name);
     }
 
-    public void snap(final Browser<?> browser, final String screenshotName) {
+    public void snap(final String screenshotName) {
         final String imageId = imageId(imageIndex++, screenshotName);
         final BufferedImage takenImage = browser.takeScreenshot();
         final Optional<BufferedImage> referenceImage = referenceImages.findImage(imageId);

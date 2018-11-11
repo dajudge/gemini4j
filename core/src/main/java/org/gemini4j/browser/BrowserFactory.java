@@ -1,6 +1,4 @@
-package org.gemini4j.plugins;
-
-import org.gemini4j.api.Browser;
+package org.gemini4j.browser;
 
 public interface BrowserFactory<B> {
     Browser<B> create();

@@ -1,6 +1,6 @@
 package org.gemini4j.diesel;
 
-import org.gemini4j.api.Browser;
+import org.gemini4j.browser.Browser;
 
 import java.net.URL;
 import java.util.function.Consumer;

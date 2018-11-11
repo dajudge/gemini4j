@@ -6,6 +6,9 @@ import org.gemini4j.browser.Browser;
 import org.gemini4j.core.Gemini4jConfiguration;
 import org.gemini4j.core.Gemini4jContext;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import static java.util.ServiceLoader.load;
@@ -38,8 +41,44 @@ public class Gemini4jPlugin implements EventListener {
         );
         publisher.registerHandlerFor(TestStepFinished.class, event -> {
             final PickleStepTestStep testStep = (PickleStepTestStep) event.testStep;
-            CONTEXT.getSnapper().snap(testStep.getStepText());
+            if (!skipSnap(testStep)) {
+                CONTEXT.getSnapper().snap(testStep.getStepText());
+            }
         });
         publisher.registerHandlerFor(TestRunFinished.class, event -> CONTEXT.shutdown());
+    }
+
+    private boolean skipSnap(final PickleStepTestStep testStep) {
+        try {
+            return !isAnnotatedWith(testStep, DontSnap.class);
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
+            return false;
+        }
+    }
+
+    private boolean isAnnotatedWith(
+            final PickleStepTestStep testStep,
+            final Class<? extends Annotation> annotation
+    ) throws NoSuchFieldException, IllegalAccessException {
+        final Method method = getStepMethod(testStep);
+        if (method.isAnnotationPresent(annotation)) {
+            return true;
+        }
+        if (method.getDeclaringClass().isAnnotationPresent(annotation)) {
+            return true;
+        }
+        return false;
+    }
+
+    private Method getStepMethod(final PickleStepTestStep testStep) throws NoSuchFieldException, IllegalAccessException {
+        final Field definitionMatchField = testStep.getClass().getDeclaredField("definitionMatch");
+        definitionMatchField.setAccessible(true);
+        final Object definitionMatch = definitionMatchField.get(testStep);
+        final Field stepDefinitionField = definitionMatch.getClass().getDeclaredField("stepDefinition");
+        stepDefinitionField.setAccessible(true);
+        final Object stepDefinition = stepDefinitionField.get(definitionMatch);
+        final Field methodField = stepDefinition.getClass().getDeclaredField("method");
+        methodField.setAccessible(true);
+        return (Method) methodField.get(stepDefinition);
     }
 }

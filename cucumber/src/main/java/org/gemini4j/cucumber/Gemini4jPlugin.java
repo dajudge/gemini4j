@@ -30,7 +30,7 @@ public class Gemini4jPlugin implements ConcurrentEventListener {
         return configs.get(0);
     }
 
-    public static <T> Browser<T> getBrowser(final Class<T> browserType) {
+    public static <T> Browser<T> getBrowser() {
         return (Browser<T>) CONTEXT.getBrowser();
     }
 
@@ -61,13 +61,12 @@ public class Gemini4jPlugin implements ConcurrentEventListener {
             final Class<? extends Annotation> annotation
     ) throws NoSuchFieldException, IllegalAccessException {
         final Method method = getStepMethod(testStep);
-        if (method.isAnnotationPresent(annotation)) {
-            return true;
-        }
-        if (method.getDeclaringClass().isAnnotationPresent(annotation)) {
-            return true;
-        }
-        return false;
+        final Class<?> clazz = method.getDeclaringClass();
+        return methodIsAnnotatedWith(method, annotation) || clazz.isAnnotationPresent(annotation);
+    }
+
+    private boolean methodIsAnnotatedWith(final Method method, final Class<? extends Annotation> annotation) {
+        return method.isAnnotationPresent(annotation);
     }
 
     private Method getStepMethod(final PickleStepTestStep testStep) throws NoSuchFieldException, IllegalAccessException {

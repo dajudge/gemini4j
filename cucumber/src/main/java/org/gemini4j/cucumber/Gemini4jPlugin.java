@@ -15,7 +15,7 @@ import static java.util.ServiceLoader.load;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
-public class Gemini4jPlugin implements EventListener {
+public class Gemini4jPlugin implements ConcurrentEventListener {
     private static final Gemini4jContext<?> CONTEXT = new Gemini4jContext<>(findConfig());
 
     private static Gemini4jConfiguration<?> findConfig() {
@@ -50,7 +50,7 @@ public class Gemini4jPlugin implements EventListener {
 
     private boolean skipSnap(final PickleStepTestStep testStep) {
         try {
-            return !isAnnotatedWith(testStep, DontSnap.class);
+            return isAnnotatedWith(testStep, DontSnap.class);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             return false;
         }

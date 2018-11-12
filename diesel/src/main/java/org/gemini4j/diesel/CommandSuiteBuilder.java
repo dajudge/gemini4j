@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.util.Collections.unmodifiableList;
 import static org.gemini4j.utils.UrlUtils.safeToUrl;
@@ -41,16 +41,16 @@ class CommandSuiteBuilder<B> implements SuiteBuilder<B> {
     }
 
     @Override
-    public SuiteBuilder<B> waitFor(final Function<Browser<B>, Boolean> condition) {
+    public SuiteBuilder<B> waitFor(final Predicate<Browser<B>> condition) {
         return waitFor(condition, defaultWaitForTimeout);
     }
 
     @Override
-    public SuiteBuilder<B> waitFor(final Function<Browser<B>, Boolean> condition, long timeout) {
+    public SuiteBuilder<B> waitFor(final Predicate<Browser<B>> condition, long timeout) {
         final Command<B> waitForCommand = browser -> {
             final long start = clock.now();
             while ((clock.now() - start) < timeout) {
-                if (condition.apply(browser)) {
+                if (condition.test(browser)) {
                     return;
                 }
                 clock.waitFor(WAIT_FOR_CHECK_INTERVAL);

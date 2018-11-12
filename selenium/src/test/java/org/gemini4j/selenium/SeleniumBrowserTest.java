@@ -76,17 +76,6 @@ public class SeleniumBrowserTest {
     }
 
     @NotNull
-    private ScreenshotProcessor save(final String suiteName) {
-        return (id, shot) -> {
-            try {
-                ImageIO.write(shot, "png", new File("src/test/resources/" + pathTo(suiteName, id)));
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to save screenshot", e);
-            }
-        };
-    }
-
-    @NotNull
     private static ScreenshotProcessor mustMatch(final String suiteName) {
         return (id, shot) -> {
             final Simile simile = newSimile(shot, png(pathTo(suiteName, id))).build();

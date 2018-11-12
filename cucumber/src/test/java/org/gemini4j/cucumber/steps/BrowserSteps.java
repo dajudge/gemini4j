@@ -37,7 +37,7 @@ public class BrowserSteps {
     }
 
     private Browser<WebDriver> browser() {
-        return Gemini4jPlugin.getBrowser(WebDriver.class);
+        return Gemini4jPlugin.getBrowser();
     }
 
 }

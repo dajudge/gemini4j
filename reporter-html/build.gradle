@@ -1,4 +1,6 @@
 dependencies {
     compile project(":core")
     compile 'org.json:json:20180813'
+
+    testCompile project(":diesel")
 }

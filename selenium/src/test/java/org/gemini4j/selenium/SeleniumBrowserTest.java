@@ -6,6 +6,7 @@ import org.gemini4j.diesel.ScreenshotProcessor;
 import org.gemini4j.diesel.SuiteBuilder;
 import org.gemini4j.simile.Simile;
 import org.jetbrains.annotations.NotNull;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
@@ -19,6 +20,8 @@ import java.io.InputStream;
 
 import static com.palantir.docker.compose.connection.waiting.HealthChecks.toRespondOverHttp;
 import static org.gemini4j.simile.Simile.newSimile;
+import static org.gemini4j.testapp.TestAppUtil.getDockerComposeFile;
+import static org.gemini4j.testapp.TestAppUtil.uploadStaticResources;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
 
@@ -30,16 +33,21 @@ public class SeleniumBrowserTest {
 
     @ClassRule
     public static DockerComposeRule DOCKER = DockerComposeRule.builder()
-            .file("src/test/docker/docker-compose.yml")
+            .file(getDockerComposeFile())
             .saveLogsTo("build/test-docker-logs")
             .waitingForService("selenium-hub", toRespondOverHttp(4444, p -> p.inFormat("http://$HOST:$EXTERNAL_PORT")))
             .waitingForService("nginx", toRespondOverHttp(80, p -> p.inFormat("http://$HOST:$EXTERNAL_PORT")))
             .build();
 
+    @BeforeClass
+    public static void setup() throws IOException {
+        uploadStaticResources("/static");
+    }
+
     @Test
     public void takes_screenshots() {
         suiteBuilder("takes_screenshots")
-                .url("http://nginx/page1.html")
+                .url(nginx("page1.html"))
                 .snap("1")
                 .build().run();
     }
@@ -47,7 +55,7 @@ public class SeleniumBrowserTest {
     @Test
     public void clicks_buttons() {
         suiteBuilder("clicks_buttons")
-                .url("http://nginx/app1.html")
+                .url(nginx("app1.html"))
                 .act(b -> b.delegate().findElement(className("clickMe")).click())
                 .snap("1")
                 .build().run();
@@ -55,15 +63,23 @@ public class SeleniumBrowserTest {
 
     @Test
     public void waits_for_conditions() {
-        suiteBuilder("clicks_buttons")
-                .url("http://nginx/app1.html")
+        suiteBuilder("waits_for_conditions")
+                .url(nginx("app1.html"))
                 .snap("1")
                 .build().run();
+    }
+
+    @NotNull
+    private String nginx(final String page) {
+        return "http://nginx/static/" + page;
     }
 
     private static BufferedImage png(final String name) {
         final ClassLoader cl = SeleniumBrowserTest.class.getClassLoader();
         try (final InputStream stream = cl.getResourceAsStream(name)) {
+            if (stream == null) {
+                throw new IOException("Could not find reference screenshot " + name);
+            }
             return ImageIO.read(stream);
         } catch (final IOException e) {
             throw new RuntimeException("Failed to load reference screenshot " + name);

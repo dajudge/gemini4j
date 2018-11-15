@@ -9,14 +9,21 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.gemini4j.testapp.TestAppUtil.uploadStaticResources;
+
 public class BrowserSteps {
+
+    public BrowserSteps() throws IOException {
+        uploadStaticResources("/static");
+    }
 
     @Given("I open (.*)")
     public void navigateTo(String url) throws MalformedURLException {
-        browser().navigateTo(new URL("http://nginx/" + url));
+        browser().navigateTo(new URL("http://nginx/static/" + url));
     }
 
     @When("^I click on the (.*) nav item$")

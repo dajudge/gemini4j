@@ -43,7 +43,6 @@ public final class TestAppUtil {
                 @Override
                 public void onFile(final String name, final InputStream in) throws IOException {
                     final File file = new File(baseDir, name);
-                    System.out.println(file.getAbsolutePath());
                     file.getParentFile().mkdirs();
                     try (final FileOutputStream fos = new FileOutputStream(file)) {
                         IOUtils.copy(in, fos);
@@ -64,8 +63,8 @@ public final class TestAppUtil {
             final FileCallback fileCallback
     ) throws IOException {
         final String fullFile = path.getFile();
-        final String directory = fullFile.substring(fullFile.indexOf("!") + 2);
-        final String jarFile = fullFile.substring("file:".length(), fullFile.indexOf("!"));
+        final String directory = fullFile.substring(fullFile.indexOf('!') + 2);
+        final String jarFile = fullFile.substring("file:".length(), fullFile.indexOf('!'));
         try (final ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile))) {
             ZipEntry entry = zip.getNextEntry();
             while (null != entry) {

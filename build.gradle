@@ -49,7 +49,6 @@ subprojects {
     }
 
     dependencies {
-        testCompile "com.palantir.docker.compose:docker-compose-rule-junit4:0.34.0"
         testCompile libJunit4
         testCompile 'org.mockito:mockito-all:1.9.5'
     }

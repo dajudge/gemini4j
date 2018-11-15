@@ -6,7 +6,7 @@ dependencies {
     compile "io.cucumber:cucumber-junit:$cucumberVersion"
     compile "io.cucumber:cucumber-java:$cucumberVersion"
     compile "io.cucumber:cucumber-guice:$cucumberVersion"
-    compile project(":reporter-html")
+    compile project(":core")
 
     testCompile project(":selenium")
     testCompile project(":testapp")

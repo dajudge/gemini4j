@@ -1,3 +1,4 @@
 dependencies {
     compile 'org.apache.commons:commons-compress:1.18'
+    compile "com.palantir.docker.compose:docker-compose-rule-junit4:0.34.0"
 }

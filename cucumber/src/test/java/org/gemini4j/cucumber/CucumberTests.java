@@ -8,21 +8,13 @@ import org.gemini4j.testapp.TestAppUtil;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import static com.palantir.docker.compose.connection.waiting.HealthChecks.toHaveAllPortsOpen;
-import static com.palantir.docker.compose.connection.waiting.HealthChecks.toRespondOverHttp;
-import static org.gemini4j.testapp.TestAppUtil.getDockerComposeFile;
+import static org.gemini4j.testapp.TestAppUtil.testAppEnvironment;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = {"org.gemini4j.cucumber.Gemini4jPlugin"})
 public class CucumberTests {
     @ClassRule
-    public static DockerComposeRule DOCKER = DockerComposeRule.builder()
-            .pullOnStartup(true)
-            .file(getDockerComposeFile())
-            .saveLogsTo("build/test-docker-logs")
-            .waitingForService("selenium-hub", toHaveAllPortsOpen())
-            .waitingForService("nginx", toRespondOverHttp(80, p -> p.inFormat("http://$HOST:$EXTERNAL_PORT")))
-            .build();
+    public static DockerComposeRule DOCKER = testAppEnvironment();
 
     public static final RecordingReporter REPORTER = new RecordingReporter();
 }

@@ -1,5 +1,7 @@
 package org.gemini4j.testapp;
 
+import com.palantir.docker.compose.DockerComposeRule;
+import com.palantir.docker.compose.ImmutableDockerComposeRule;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
@@ -11,10 +13,22 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static com.palantir.docker.compose.connection.waiting.HealthChecks.toHaveAllPortsOpen;
+import static com.palantir.docker.compose.connection.waiting.HealthChecks.toRespondOverHttp;
 import static java.nio.file.Files.createTempDirectory;
 
 public final class TestAppUtil {
     private TestAppUtil() {
+    }
+
+    public static ImmutableDockerComposeRule testAppEnvironment() {
+        return DockerComposeRule.builder()
+                .pullOnStartup(true)
+                .file(getDockerComposeFile())
+                .saveLogsTo("build/test-docker-logs")
+                .waitingForService("selenium-hub", toHaveAllPortsOpen())
+                .waitingForService("nginx", toRespondOverHttp(80, p -> p.inFormat("http://$HOST:$EXTERNAL_PORT")))
+                .build();
     }
 
     private interface FileCallback {
@@ -56,7 +70,6 @@ public final class TestAppUtil {
             throw new RuntimeException("Failed to extract docker compose directory from JAR file", e);
         }
     }
-
 
     private static void traverseJarFileDirectory(
             final URL path,

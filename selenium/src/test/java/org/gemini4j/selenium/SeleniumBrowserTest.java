@@ -18,9 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.palantir.docker.compose.connection.waiting.HealthChecks.toRespondOverHttp;
 import static org.gemini4j.simile.Simile.newSimile;
-import static org.gemini4j.testapp.TestAppUtil.getDockerComposeFile;
+import static org.gemini4j.testapp.TestAppUtil.testAppEnvironment;
 import static org.gemini4j.testapp.TestAppUtil.uploadStaticResources;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.By.className;
@@ -32,12 +31,7 @@ public class SeleniumBrowserTest {
     );
 
     @ClassRule
-    public static DockerComposeRule DOCKER = DockerComposeRule.builder()
-            .file(getDockerComposeFile())
-            .saveLogsTo("build/test-docker-logs")
-            .waitingForService("selenium-hub", toRespondOverHttp(4444, p -> p.inFormat("http://$HOST:$EXTERNAL_PORT")))
-            .waitingForService("nginx", toRespondOverHttp(80, p -> p.inFormat("http://$HOST:$EXTERNAL_PORT")))
-            .build();
+    public static DockerComposeRule DOCKER = testAppEnvironment();
 
     @BeforeClass
     public static void setup() throws IOException {

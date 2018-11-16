@@ -4,18 +4,18 @@ import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.ImmutableDockerComposeRule;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.compress.utils.IOUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static com.palantir.docker.compose.connection.waiting.HealthChecks.toHaveAllPortsOpen;
 import static com.palantir.docker.compose.connection.waiting.HealthChecks.toRespondOverHttp;
 import static java.nio.file.Files.createTempDirectory;
+import static org.apache.commons.compress.utils.IOUtils.copy;
 
 public final class TestAppUtil {
     private TestAppUtil() {
@@ -31,10 +31,10 @@ public final class TestAppUtil {
                 .build();
     }
 
-    private interface FileCallback {
+    public interface FileCallback {
         void onDirectory(String name) throws IOException;
 
-        void onFile(String name, InputStream in) throws IOException;
+        void onFile(String name, long size, InputStream in) throws IOException;
     }
 
     public static String getDockerComposeFile() {
@@ -55,11 +55,11 @@ public final class TestAppUtil {
                 }
 
                 @Override
-                public void onFile(final String name, final InputStream in) throws IOException {
+                public void onFile(final String name, long size, final InputStream in) throws IOException {
                     final File file = new File(baseDir, name);
                     file.getParentFile().mkdirs();
                     try (final FileOutputStream fos = new FileOutputStream(file)) {
-                        IOUtils.copy(in, fos);
+                        copy(in, fos);
                     }
                 }
             };
@@ -85,7 +85,7 @@ public final class TestAppUtil {
                     if (entry.isDirectory()) {
                         fileCallback.onDirectory(entry.getName());
                     } else {
-                        fileCallback.onFile(entry.getName(), zip);
+                        fileCallback.onFile(entry.getName(), entry.getSize(), zip);
                     }
                 }
                 entry = zip.getNextEntry();
@@ -94,45 +94,64 @@ public final class TestAppUtil {
     }
 
     public static void uploadStaticResources(final String resourceDirectory) throws IOException {
+        final Consumer<FileCallback> source = cb -> traversePath(
+                new File(Object.class.getResource(resourceDirectory).getFile()),
+                "", cb
+        );
+        uploadStatusResources(source);
+    }
+
+    public static void uploadStatusResources(final Consumer<FileCallback> source) throws IOException {
         final HttpURLConnection conn = (HttpURLConnection) new URL("http://localhost:8080/upload.php").openConnection();
         conn.setDoOutput(true);
         conn.setRequestMethod("POST");
         try (final OutputStream out = conn.getOutputStream()) {
-            write(Object.class.getResource(resourceDirectory).getFile(), out);
+            tar(out, source);
         }
         if (conn.getResponseCode() != 200) {
             throw new RuntimeException("Failed to upload webapp to nginx: " + conn.getResponseCode());
         }
     }
 
-    private static void write(final String path, final OutputStream out) throws IOException {
-        try (final TarArchiveOutputStream tOut = new TarArchiveOutputStream(new GzipCompressorOutputStream(out))) {
-            addFileToTarGz(tOut, path, "");
-            tOut.flush();
-        }
+    public static void tar(final OutputStream out, final Consumer<FileCallback> source) {
+        final TarArchiveOutputStream tar = new TarArchiveOutputStream(out);
+        source.accept(new FileCallback() {
+            @Override
+            public void onDirectory(final String name) throws IOException {
+                tar.putArchiveEntry(new TarArchiveEntry(name + "/"));
+                tar.closeArchiveEntry();
+            }
+
+            @Override
+            public void onFile(final String name, final long size, final InputStream in) throws IOException {
+                final TarArchiveEntry entry = new TarArchiveEntry(name);
+                entry.setSize(size);
+                tar.putArchiveEntry(entry);
+                copy(in, tar);
+                tar.closeArchiveEntry();
+            }
+        });
     }
 
-    private static void addFileToTarGz(
-            final TarArchiveOutputStream tOut,
-            final String path,
-            final String base
-    ) throws IOException {
-        final File f = new File(path);
-        final String entryName = base + f.getName();
-        final TarArchiveEntry tarEntry = new TarArchiveEntry(f, entryName);
-        tOut.putArchiveEntry(tarEntry);
-
-        if (f.isFile()) {
-            IOUtils.copy(new FileInputStream(f), tOut);
-            tOut.closeArchiveEntry();
-        } else {
-            tOut.closeArchiveEntry();
-            final File[] children = f.listFiles();
-            if (children != null) {
-                for (final File child : children) {
-                    addFileToTarGz(tOut, child.getAbsolutePath(), entryName + "/");
+    private static void traversePath(final File path, final String base, final FileCallback cb) {
+        final String entryName = base + path.getName();
+        try {
+            if (path.isFile()) {
+                try (final FileInputStream fis = new FileInputStream(path)) {
+                    cb.onFile(entryName, path.length(), fis);
+                }
+            } else {
+                cb.onDirectory(entryName);
+                final File[] children = path.listFiles();
+                if (children != null) {
+                    for (final File child : children) {
+                        traversePath(child.getAbsoluteFile(), entryName + "/", cb);
+                    }
                 }
             }
+        } catch (
+                final IOException e) {
+            throw new RuntimeException("Error traversing directory", e);
         }
     }
 }

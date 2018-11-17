@@ -4,18 +4,22 @@ import static org.junit.Assert.fail;
 
 public class EventVisitor {
     public void visitLooksDifferentEvent(final LooksDifferentEvent e) {
-        fail("Unexpected event: " + e);
+        nope(e);
     }
 
     public void visitLooksSameEvent(final LooksSameEvent e) {
-        fail("Unexpected event: " + e);
+        nope(e);
     }
 
     public void visitNextTestEvent(final NextTestEvent e) {
-        fail("Unexpected event: " + e);
+        nope(e);
     }
 
     public void visitScreenshotNotKnownEvent(final ScreenshotNotKnownEvent e) {
+        nope(e);
+    }
+
+    private void nope(final RecordedEvent e) {
         fail("Unexpected event: " + e);
     }
 }

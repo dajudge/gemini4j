@@ -1,4 +1,4 @@
-package org.gemini4j.cucumber;
+package org.gemini4j.reporter.html;
 
 import org.gemini4j.browser.Browser;
 import org.gemini4j.core.Gemini4jConfiguration;
@@ -9,23 +9,24 @@ import org.gemini4j.selenium.WebDriverBrowser;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.util.function.BiConsumer;
+
 public class Config implements Gemini4jConfiguration<WebDriver> {
-    private static final String IMAGE_PREFIX = "org/gemini4j/cucumber/shots/";
-    private static final ReferenceImageResolver IMAGE_RESOLVER = new ClasspathReferenceImageResolver(IMAGE_PREFIX);
+    private BiConsumer<String, byte[]> store;
+    private static final String IMAGE_PREFIX = "org/gemini4j/reporter/html";
 
     @Override
     public Reporter getReporter() {
-        return CucumberTests.REPORTER;
+        return new HtmlReporter(store, HtmlTemplate.STANDARD::openStream);
     }
 
     @Override
     public ReferenceImageResolver getReferenceImageResolver() {
-        return IMAGE_RESOLVER;
+        return new ClasspathReferenceImageResolver(IMAGE_PREFIX);
     }
 
     @Override
     public Browser<WebDriver> getBrowser() {
         return new WebDriverBrowser("http://localhost:4444/wd/hub", new ChromeOptions());
     }
-
 }

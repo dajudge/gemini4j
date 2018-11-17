@@ -1,4 +1,4 @@
-package org.gemini4j.testapp;
+package org.gemini4j.testapp.util;
 
 import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.ImmutableDockerComposeRule;
@@ -94,11 +94,8 @@ public final class TestAppUtil {
     }
 
     public static void uploadStaticResources(final String resourceDirectory) throws IOException {
-        final Consumer<FileCallback> source = cb -> traversePath(
-                new File(Object.class.getResource(resourceDirectory).getFile()),
-                "", cb
-        );
-        uploadStatusResources(source);
+        final File path = new File(Object.class.getResource(resourceDirectory).getFile());
+        uploadStatusResources(cb -> traversePath(path, "", cb));
     }
 
     public static void uploadStatusResources(final Consumer<FileCallback> source) throws IOException {
@@ -149,8 +146,7 @@ public final class TestAppUtil {
                     }
                 }
             }
-        } catch (
-                final IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException("Error traversing directory", e);
         }
     }

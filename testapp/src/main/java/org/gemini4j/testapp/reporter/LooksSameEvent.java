@@ -1,4 +1,4 @@
-package org.gemini4j.cucumber.reporter;
+package org.gemini4j.testapp.reporter;
 
 public class LooksSameEvent implements RecordedEvent {
     private final String screenshotName;
@@ -8,11 +8,18 @@ public class LooksSameEvent implements RecordedEvent {
     }
 
     @Override
-    public boolean accept(final EventVisitor visitor) {
-        return visitor.visitLooksSameEvent(this);
+    public void accept(final EventVisitor visitor) {
+        visitor.visitLooksSameEvent(this);
     }
 
     public String getScreenshotName() {
         return screenshotName;
+    }
+
+    @Override
+    public String toString() {
+        return "LooksSameEvent{" +
+                "screenshotName='" + screenshotName + '\'' +
+                '}';
     }
 }

@@ -3,6 +3,7 @@ dependencies {
     compile 'org.json:json:20180813'
 
     testCompile project(":diesel")
+    testCompile project(":selenium")
     testCompile project(":testapp")
     testRuntime 'ch.qos.logback:logback-classic:1.2.3'
 }

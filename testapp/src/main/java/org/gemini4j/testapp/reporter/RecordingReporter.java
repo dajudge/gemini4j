@@ -1,4 +1,4 @@
-package org.gemini4j.cucumber.reporter;
+package org.gemini4j.testapp.reporter;
 
 import org.gemini4j.reporter.Reporter;
 
@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 public class RecordingReporter implements Reporter {
     private final List<RecordedEvent> recordedEvents = new ArrayList<>();
@@ -42,8 +42,14 @@ public class RecordingReporter implements Reporter {
 
     public void assertVisitor(final EventVisitor visitor) {
         final RecordedEvent event = recordedEvents.remove(0);
-        if (!event.accept(visitor)) {
-            fail("Unexpected event recorded: " + event);
+        try {
+            event.accept(visitor);
+        } catch (final Exception e) {
+            throw new AssertionError("Failed with event " + event, e);
         }
+    }
+
+    public void assertNoMoreEvents() {
+        assertTrue("Tere still were recorded events left.", recordedEvents.isEmpty());
     }
 }

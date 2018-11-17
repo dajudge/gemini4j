@@ -1,6 +1,8 @@
 package org.gemini4j.diesel;
 
 import org.gemini4j.browser.Browser;
+import org.gemini4j.core.Gemini4jContext;
+import org.gemini4j.core.Snapper;
 import org.gemini4j.utils.Clock;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,31 +17,50 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SuiteBuilderTest {
+    private static final String SUITE_NAME = "someSuite";
     private SuiteBuilder<TestableBrowser> builder;
 
     private final long WAIT_FOR_TIMEOUT = 42;
 
     @Mock
-    private Browser<TestableBrowser> browser;
+    private TestableBrowser browser;
     @Mock
-    private ScreenshotProcessor screenshotProcessor;
+    private Gemini4jContext<TestableBrowser> context;
     @Mock
     private Clock clock;
+    @Mock
+    private Snapper<TestableBrowser> snapper;
 
     @Before
     public void setup() {
-        builder = new CommandSuiteBuilder<>(clock, () -> browser, screenshotProcessor, WAIT_FOR_TIMEOUT);
+        when(context.getSnapper()).thenReturn(snapper);
+        when(context.getBrowser()).thenReturn(browser);
+        builder = new CommandSuiteBuilder<>(SUITE_NAME, clock, context, WAIT_FOR_TIMEOUT);
     }
 
     @Test
-    public void closes_browser_properly() {
+    public void snaps() {
+        builder.snap("id").build().run();
+
+        verify(snapper).snap("id");
+    }
+
+    @Test
+    public void reports_to_reporter() {
+        builder.snap("snap").build().run();
+
+        verify(snapper).nextTest(SUITE_NAME);
+    }
+
+    @Test
+    public void closes_context_properly() {
         builder.build().run();
 
-        verify(browser).shutdown();
+        verify(context).shutdown();
     }
 
     @Test
@@ -54,7 +75,7 @@ public class SuiteBuilderTest {
     @Test
     public void provides_browser_access() {
         final TestableBrowser delegate = Mockito.mock(TestableBrowser.class);
-        Mockito.when(browser.delegate()).thenReturn(delegate);
+        when(browser.delegate()).thenReturn(delegate);
 
         builder.act(b -> b.delegate().customBrowserMethod()).build().run();
 
@@ -69,8 +90,8 @@ public class SuiteBuilderTest {
 
     @Test
     public void fails_when_condition_does_not_come_true() {
-        Mockito.doAnswer(call -> {
-            Mockito.when(clock.now()).thenReturn(WAIT_FOR_TIMEOUT + 1);
+        doAnswer(call -> {
+            when(clock.now()).thenReturn(WAIT_FOR_TIMEOUT + 1);
             return 0;
         }).when(clock).waitFor(anyLong());
         try {

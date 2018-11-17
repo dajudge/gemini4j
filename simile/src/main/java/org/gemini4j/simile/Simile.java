@@ -2,7 +2,6 @@ package org.gemini4j.simile;
 
 import org.gemini4j.simile.comparator.ComparatorConfig;
 import org.gemini4j.simile.comparator.ComparatorFactory;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -96,8 +95,8 @@ public class Simile {
      * @return the {@link Builder}.
      */
     public static Builder newSimile(
-            @NotNull final BufferedImage blue,
-            @NotNull final BufferedImage green
+            final BufferedImage blue,
+            final BufferedImage green
     ) {
         return new Builder() {
             private Color highlightColor = DEFAULT_HIGHLIGHT_COLOR;
@@ -106,42 +105,36 @@ public class Simile {
             private boolean strictMode = false;
             private double tolerance = NOT_NOTICABLE_TOLERANCE;
 
-            @NotNull
             @Override
             public Builder ignoreAntialiasing() {
                 ignoreAntialiasing = true;
                 return this;
             }
 
-            @NotNull
             @Override
             public Builder ignoreCaret() {
                 ignoreCaret = true;
                 return this;
             }
 
-            @NotNull
             @Override
             public Builder tolerance(final double tolerance) {
                 this.tolerance = tolerance;
                 return this;
             }
 
-            @NotNull
             @Override
             public Builder strict() {
                 this.strictMode = true;
                 return this;
             }
 
-            @NotNull
             @Override
-            public Builder highlightColor(@NotNull final Color color) {
+            public Builder highlightColor(final Color color) {
                 highlightColor = color;
                 return this;
             }
 
-            @NotNull
             @Override
             public Simile build() {
                 final ComparatorConfig comparatorConfig = new ComparatorConfig(

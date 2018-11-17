@@ -4,7 +4,6 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 import org.gemini4j.browser.Browser;
 import org.gemini4j.cucumber.Gemini4jPlugin;
-import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.gemini4j.testapp.TestAppUtil.uploadStaticResources;
+import static org.gemini4j.testapp.util.TestAppUtil.uploadStaticResources;
 
 public class BrowserSteps {
 
@@ -31,7 +30,6 @@ public class BrowserSteps {
         navItem(navItem).click();
     }
 
-    @NotNull
     private WebElement navItem(final String navItem) {
         return webdriver().findElements(By.className("nav-link")).stream()
                 .filter(it -> it.getText().equals(navItem))

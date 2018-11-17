@@ -1,13 +1,14 @@
 package org.gemini4j.core;
 
+import org.gemini4j.browser.Browser;
 import org.gemini4j.browser.BrowserFactory;
-import org.gemini4j.imageresolver.ReferenceImageResolverFactory;
-import org.gemini4j.reporter.ReporterFactory;
+import org.gemini4j.imageresolver.ReferenceImageResolver;
+import org.gemini4j.reporter.Reporter;
 
 public interface Gemini4jConfiguration<T> {
-    BrowserFactory<T> getBrowserFactory();
+    Reporter getReporter();
 
-    ReporterFactory getReporterFactory();
+    ReferenceImageResolver getReferenceImageResolver();
 
-    ReferenceImageResolverFactory getReferenceImageResolverFactory();
+    Browser<T> getBrowser();
 }

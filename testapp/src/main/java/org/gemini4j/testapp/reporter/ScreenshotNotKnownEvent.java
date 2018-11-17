@@ -1,4 +1,4 @@
-package org.gemini4j.cucumber.reporter;
+package org.gemini4j.testapp.reporter;
 
 public class ScreenshotNotKnownEvent implements RecordedEvent {
     private final String screenshotName;
@@ -8,11 +8,18 @@ public class ScreenshotNotKnownEvent implements RecordedEvent {
     }
 
     @Override
-    public boolean accept(final EventVisitor visitor) {
-        return visitor.visitScreenshotNotKnownEvent(this);
+    public void accept(final EventVisitor visitor) {
+        visitor.visitScreenshotNotKnownEvent(this);
     }
 
     public String getScreenshotName() {
         return screenshotName;
+    }
+
+    @Override
+    public String toString() {
+        return "ScreenshotNotKnownEvent{" +
+                "screenshotName='" + screenshotName + '\'' +
+                '}';
     }
 }

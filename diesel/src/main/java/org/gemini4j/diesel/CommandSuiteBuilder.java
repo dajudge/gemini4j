@@ -1,7 +1,7 @@
 package org.gemini4j.diesel;
 
 import org.gemini4j.browser.Browser;
-import org.gemini4j.browser.BrowserFactory;
+import org.gemini4j.core.Gemini4jContext;
 import org.gemini4j.utils.Clock;
 
 import java.net.URL;
@@ -17,20 +17,20 @@ class CommandSuiteBuilder<B> implements SuiteBuilder<B> {
     private static final int WAIT_FOR_CHECK_INTERVAL = 100;
 
     private final List<Command<B>> commands = new ArrayList<>();
-    private final BrowserFactory<B> browserFactory;
-    private final ScreenshotProcessor screenshotProcessor;
+    private final Gemini4jContext<B> context;
     private final long defaultWaitForTimeout;
+    private final String suiteName;
     private final Clock clock;
 
     CommandSuiteBuilder(
+            final String suiteName,
             final Clock clock,
-            final BrowserFactory<B> browserFactory,
-            final ScreenshotProcessor screenshotProcessor,
+            final Gemini4jContext<B> context,
             final long defaultWaitForTimeout
     ) {
+        this.suiteName = suiteName;
         this.clock = clock;
-        this.browserFactory = browserFactory;
-        this.screenshotProcessor = screenshotProcessor;
+        this.context = context;
         this.defaultWaitForTimeout = defaultWaitForTimeout;
     }
 
@@ -73,11 +73,11 @@ class CommandSuiteBuilder<B> implements SuiteBuilder<B> {
 
     @Override
     public SuiteBuilder snap(final String id) {
-        return act(browser -> screenshotProcessor.onImage(id, browser.takeScreenshot()));
+        return act(browser -> context.getSnapper().snap(id));
     }
 
     @Override
     public Suite build() {
-        return new CommandSuite<>(browserFactory, unmodifiableList(commands));
+        return new CommandSuite<>(suiteName, context, unmodifiableList(commands));
     }
 }

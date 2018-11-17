@@ -1,7 +1,5 @@
 package org.gemini4j.simile;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,7 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 class TestUtil {
-    private static BufferedImage image(@NotNull final String fileName) {
+    private static BufferedImage image(final String fileName) {
         try {
             final String fullName = "data/" + fileName;
             final URL url = SimpleComparisonTest.class.getClassLoader().getResource(fullName);
@@ -29,11 +27,11 @@ class TestUtil {
     static Consumer<Simile> LOOKS_SAME = simile -> assertTrue(simile.lookSame());
     static Consumer<Simile> LOOKS_DIFFERENT = simile -> assertFalse(simile.lookSame());
 
-    static Consumer<Simile> diffsToArea(@NotNull Consumer<Optional<Rectangle>> assertion) {
+    static Consumer<Simile> diffsToArea(Consumer<Optional<Rectangle>> assertion) {
         return result -> assertion.accept(result.diffArea());
     }
 
-    static Consumer<Simile> diffsTo(@NotNull final String reference) {
+    static Consumer<Simile> diffsTo(final String reference) {
         return result -> {
             assertTrue(
                     newSimile(result.diff(), image(reference))
@@ -44,8 +42,8 @@ class TestUtil {
     }
 
     static Builder simileFor(
-            @NotNull final String blue,
-            @NotNull final String green
+            final String blue,
+            final String green
     ) {
         return newSimile(image("src/" + blue), image("src/" + green));
     }

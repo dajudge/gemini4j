@@ -1,7 +1,5 @@
 package org.gemini4j.simile;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.awt.*;
 
 /**
@@ -15,7 +13,6 @@ public interface Builder {
      *
      * @return the {@link Builder} to continue building.
      */
-    @NotNull
     Builder ignoreAntialiasing();
 
     /**
@@ -23,7 +20,6 @@ public interface Builder {
      *
      * @return the {@link Builder} to continue building.
      */
-    @NotNull
     Builder ignoreCaret();
 
     /**
@@ -32,7 +28,6 @@ public interface Builder {
      * @param tolerance the tolerance.
      * @return the {@link Builder} to continue building.
      */
-    @NotNull
     Builder tolerance(double tolerance);
 
     /**
@@ -40,7 +35,6 @@ public interface Builder {
      *
      * @return the {@link Builder} to continue building.
      */
-    @NotNull
     Builder strict();
 
     /**
@@ -49,14 +43,12 @@ public interface Builder {
      * @param color the highlight color.
      * @return the {@link Builder} to continue building.
      */
-    @NotNull
-    Builder highlightColor(@NotNull Color color);
+    Builder highlightColor(Color color);
 
     /**
      * Creates a new {@link Simile} with the given configuration.
      *
      * @return the new {@link Simile}.
      */
-    @NotNull
     Simile build();
 }

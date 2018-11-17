@@ -23,9 +23,9 @@ public class Gemini4jContext<T> implements Shutdown {
 
     private void ensureInitialized() {
         if (snapper == null) {
-            reporter = config.getReporterFactory().create();
-            browser = config.getBrowserFactory().create();
-            final ReferenceImageResolver images = config.getReferenceImageResolverFactory().create();
+            reporter = config.getReporter();
+            browser = config.getBrowser();
+            final ReferenceImageResolver images = config.getReferenceImageResolver();
             snapper = new Snapper(reporter, images, browser);
         }
     }

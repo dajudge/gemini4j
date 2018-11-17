@@ -1,32 +1,32 @@
 package org.gemini4j.reporter.html;
 
 import com.palantir.docker.compose.DockerComposeRule;
+import org.gemini4j.diesel.Gemini4j;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import static org.gemini4j.testapp.TestAppUtil.testAppEnvironment;
-import static org.gemini4j.testapp.TestAppUtil.uploadStatusResources;
+import static org.gemini4j.reporter.html.HtmlTemplate.STANDARD;
+import static org.gemini4j.testapp.util.TestAppUtil.testAppEnvironment;
+import static org.gemini4j.testapp.util.TestAppUtil.uploadStatusResources;
 
 public class HtmlReporterTest {
     @ClassRule
     public static final DockerComposeRule DOCKER = testAppEnvironment();
-    public static final String STANDARD_TEMPLATE = "org/gemini4j/reporter/html/templates/standard.html";
 
     @Test
     public void does_something() throws IOException {
-        uploadReport(STANDARD_TEMPLATE, reporter -> {
+        uploadReport(STANDARD, reporter -> {
             reporter.nextTest("Next Test");
         });
+        Gemini4j.suite("SuiteName", new Config());
     }
 
-    private void uploadReport(final String templatePath, final Consumer<HtmlReporter> test) throws IOException {
+    private void uploadReport(final HtmlTemplate templatePath, final Consumer<HtmlReporter> test) throws IOException {
         uploadStatusResources(cb -> {
             final BiConsumer<String, byte[]> store = (s, bytes) -> {
                 try {
@@ -35,9 +35,7 @@ public class HtmlReporterTest {
                     throw new RuntimeException("Failed to store report resource " + s, e);
                 }
             };
-            final Supplier<InputStream> template = () -> HtmlReporter.class.getClassLoader()
-                    .getResourceAsStream(templatePath);
-            final HtmlReporter reporter = new HtmlReporter(store, template);
+            final HtmlReporter reporter = new HtmlReporter(store, templatePath::openStream);
             test.accept(reporter);
             reporter.shutdown();
         });

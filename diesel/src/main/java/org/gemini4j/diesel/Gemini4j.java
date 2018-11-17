@@ -1,6 +1,7 @@
 package org.gemini4j.diesel;
 
-import org.gemini4j.browser.BrowserFactory;
+import org.gemini4j.core.Gemini4jConfiguration;
+import org.gemini4j.core.Gemini4jContext;
 import org.gemini4j.utils.Clock;
 
 public class Gemini4j {
@@ -11,10 +12,7 @@ public class Gemini4j {
 
     }
 
-    public static <B> SuiteBuilder<B> suite(
-            final BrowserFactory<B> browserFactory,
-            final ScreenshotProcessor screenshotProcessor
-    ) {
-        return new CommandSuiteBuilder<>(clock, browserFactory, screenshotProcessor, DEFAULT_WAIT_FOR_TIMEOUT);
+    public static <B> SuiteBuilder<B> suite(final String suiteName, final Gemini4jConfiguration<B> config) {
+        return new CommandSuiteBuilder<>(suiteName, clock, new Gemini4jContext<>(config), DEFAULT_WAIT_FOR_TIMEOUT);
     }
 }

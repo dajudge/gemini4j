@@ -154,7 +154,7 @@ bintray {
 
 subprojects {
     if (versionInfo.release) {
-        println "Artifacts will be released to bintray."
+        println "Artifact ${project.groupId}:${project.name}:${versionInfo.name} will be released to bintray."
         build.finalizedBy bintrayUpload
     }
 

@@ -32,7 +32,6 @@ sonarqube {
 
 allprojects {
     apply plugin: 'jacoco'
-    group "org.gemini4j"
 }
 
 subprojects {
@@ -132,7 +131,10 @@ def pomConfig = {
 
 def versionInfo = determineVersion()
 println "Version info: ${versionInfo}"
-version versionInfo.name
+allprojects {
+    group "org.gemini4j"
+    version versionInfo.name
+}
 
 bintray {
     user = System.getenv('BINTRAY_API_USER')

@@ -147,7 +147,7 @@ subprojects {
         pkg {
             version {
                 name = versionInfo.name
-                desc = "gemini4j $versionInfo.name"
+                desc = "gemini4j $project.name $versionInfo.name"
                 released = new Date()
                 vcsTag = versionInfo.commitid
             }
@@ -170,7 +170,7 @@ subprojects {
                 pom.withXml {
                     def root = asNode()
                     root.appendNode('description', 'Screenshot-based UI testing.')
-                    root.appendNode('name', 'gemini4j')
+                    root.appendNode('name', project.name)
                     root.appendNode('url', 'https://www.gemini4j.org/')
                     root.children().last() + pomConfig
                 }

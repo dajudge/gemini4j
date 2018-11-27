@@ -1,17 +1,18 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            url "https://dl.bintray.com/palantir/releases"
-        }
+        maven { url "https://dl.bintray.com/palantir/releases" }
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+        classpath 'org.eclipse.jgit:org.eclipse.jgit:3.5.0.201409260305-r'
     }
 }
 
 plugins {
     id "org.sonarqube" version "2.6"
 }
-
-println "DOCKER_HOST: ${System.getenv("DOCKER_HOST")}"
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.6'
@@ -56,6 +57,124 @@ subprojects {
     test {
         testLogging {
             showStandardStreams = true
+        }
+    }
+
+    javadoc {
+        source = sourceSets.main.allJava
+        classpath = configurations.compileClasspath
+        options.encoding = 'UTF-8'
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        classifier "sources"
+    }
+
+    task javadocJar(type: Jar) {
+        from javadoc
+        classifier = 'javadoc'
+    }
+
+}
+
+
+def determineVersion() {
+    def repo = new org.eclipse.jgit.storage.file.FileRepositoryBuilder()
+            .setGitDir(file("$projectDir/.git"))
+            .findGitDir()
+            .setMustExist(true)
+            .build()
+    def commitid = repo.getRef('HEAD').objectId.name
+    def branchName = System.getenv("CI_COMMIT_REF_NAME") ?: commitid
+    if (branchName.startsWith('release/')) {
+        return [
+                branch  : branchName,
+                name    : branchName.substring('release/'.length()),
+                commitid: commitid,
+                release : true
+        ]
+    } else {
+        return [
+                branch  : branchName,
+                name    : '0.0.1-SNAPSHOT',
+                commitid: commitid,
+                release : false
+        ]
+    }
+}
+
+def versionInfo = determineVersion()
+println "Version info: ${versionInfo}"
+group "org.gemini4j"
+version versionInfo.name
+
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven-publish'
+
+
+def pomConfig = {
+    licenses {
+        license {
+            name "MIT"
+            url "https://opensource.org/licenses/MIT"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "alexstockinger"
+            name "Alex Stockinger"
+            email "mail@alexstockinger.de"
+        }
+    }
+
+    scm {
+        url "https://github.com/dajudge/gemini4j"
+    }
+}
+
+subprojects {
+    if (versionInfo.release) {
+        println "Artifacts will be released to bintray."
+        build.finalizedBy bintrayUpload
+    }
+
+    bintray {
+        user = System.getenv('BINTRAY_API_USER')
+        key = System.getenv('BINTRAY_API_KEY')
+        publications = [project.name]
+        pkg {
+            version {
+                name = versionInfo.name
+                desc = "gemini4j $versionInfo.name"
+                released = new Date()
+                vcsTag = versionInfo.commitid
+            }
+            repo = 'gemini4j'
+            name = project.name
+            licenses = ['MIT']
+            vcsUrl = 'https://github.com/dajudge/gemini4j.git'
+        }
+    }
+
+    publishing {
+        publications {
+            "${project.name}"(MavenPublication) {
+                from components.java
+                artifact sourceJar
+                artifact javadocJar
+                groupId project.group
+                artifactId project.name
+                version versionInfo.name
+                pom.withXml {
+                    def root = asNode()
+                    root.appendNode('description', 'Screenshot-based UI testing.')
+                    root.appendNode('name', 'gemini4j')
+                    root.appendNode('url', 'https://www.gemini4j.org/')
+                    root.children().last() + pomConfig
+                }
+            }
         }
     }
 }

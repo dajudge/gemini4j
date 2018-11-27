@@ -32,6 +32,7 @@ sonarqube {
 
 allprojects {
     apply plugin: 'jacoco'
+    group "org.gemini4j"
 }
 
 subprojects {
@@ -104,11 +105,6 @@ def determineVersion() {
     }
 }
 
-def versionInfo = determineVersion()
-println "Version info: ${versionInfo}"
-group "org.gemini4j"
-version versionInfo.name
-
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
@@ -134,6 +130,10 @@ def pomConfig = {
     }
 }
 
+def versionInfo = determineVersion()
+println "Version info: ${versionInfo}"
+version versionInfo.name
+
 bintray {
     user = System.getenv('BINTRAY_API_USER')
     key = System.getenv('BINTRAY_API_KEY')
@@ -146,7 +146,7 @@ bintray {
             vcsTag = versionInfo.commitid
         }
         repo = 'gemini4j'
-        name = project.name
+        name = project.group
         licenses = ['MIT']
         vcsUrl = 'https://github.com/dajudge/gemini4j.git'
     }

@@ -134,28 +134,28 @@ def pomConfig = {
     }
 }
 
+bintray {
+    user = System.getenv('BINTRAY_API_USER')
+    key = System.getenv('BINTRAY_API_KEY')
+    publications = project.subprojects.collect { it.name }
+    pkg {
+        version {
+            name = versionInfo.name
+            desc = "gemini4j $project.name $versionInfo.name"
+            released = new Date()
+            vcsTag = versionInfo.commitid
+        }
+        repo = 'gemini4j'
+        name = project.name
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/dajudge/gemini4j.git'
+    }
+}
+
 subprojects {
     if (versionInfo.release) {
         println "Artifacts will be released to bintray."
         build.finalizedBy bintrayUpload
-    }
-
-    bintray {
-        user = System.getenv('BINTRAY_API_USER')
-        key = System.getenv('BINTRAY_API_KEY')
-        publications = [project.name]
-        pkg {
-            version {
-                name = versionInfo.name
-                desc = "gemini4j $project.name $versionInfo.name"
-                released = new Date()
-                vcsTag = versionInfo.commitid
-            }
-            repo = 'gemini4j'
-            name = project.name
-            licenses = ['MIT']
-            vcsUrl = 'https://github.com/dajudge/gemini4j.git'
-        }
     }
 
     publishing {

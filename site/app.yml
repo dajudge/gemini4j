@@ -3,17 +3,6 @@ kind: Namespace
 metadata:
   name: gemini4j
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: regcred
-  namespace: gemini4j
-  annotations:
-    replicator.v1.mittwald.de/replicate-from: default/regcred
-type: kubernetes.io/dockerconfigjson
-data:
-  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2V4YW1wbGUuY29tIjp7InVzZXJuYW1lIjoidXNlcm5hbWUiLCJwYXNzd29yZCI6InBhc3N3b3JkIiwiZW1haWwiOiJtYWlsQGV4YW1wbGUuY29tIiwiYXV0aCI6ImNHeGhZMlZvYjJSc1pYST0ifX19
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,11 +23,11 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: ${env.DOCKER_REGISTRY}/gemini4j:latest
+        image: ${env.DOCKER_REGISTRY}/gemini4j/website:latest
         ports:
         - containerPort: 80
       imagePullSecrets:
-        - name: regcred
+        - name: docker-registry
 ---
 apiVersion: v1
 kind: Service
@@ -60,7 +49,7 @@ metadata:
   name: gemini4j
   namespace: gemini4j
   annotations:
-    certmanager.k8s.io/cluster-issuer: 'letsencrypt-prod'
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
   - host: 'www.gemini4j.org'

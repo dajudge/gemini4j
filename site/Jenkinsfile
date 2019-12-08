@@ -3,7 +3,7 @@ def dockerRegistryUrl() {
 }
 
 def getImageName() {
-    "${dockerRegistryUrl()}/gemini4j:latest"
+    "${dockerRegistryUrl()}/gemini4j/website:latest"
 }
 
 node {
@@ -23,8 +23,11 @@ node {
     }
     stage ("Deploy to k8s") {
         dir ("site") {
-            sh "kubectl delete --wait=true --ignore-not-found=true -n gemini4j secret regcred"
             sh "tippel app.yml | kubectl apply -f -"
+            sh "kubectl delete secret docker-registry -n website --ignore-not-found"
+            withCredentials([usernamePassword(credentialsId: 'local_docker_registry', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                sh "kubectl create secret docker-registry docker-registry --namespace gemini4j --docker-server=${DOCKER_REGISTRY} --docker-username=${DOCKER_USERNAME} --docker-password=${DOCKER_PASSWORD} --docker-email=dajudge.as@gmail.com"
+            }
         }
     }
 }
